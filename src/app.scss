@@ -1,0 +1,23 @@
+@import 'style/common/variables.scss';
+@import 'style/common/responsive.scss';
+@import 'style/common/overwrite-theme.scss';
+@import 'style/common/font-style.scss';
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    background: url('style/img/main-bg.jpg') no-repeat center center / cover;
+}
+
+#root {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+.app {
+    margin: auto;
+    color: $colorWhite;
+    font-family: $fontConsola;
+}
