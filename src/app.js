@@ -5,9 +5,17 @@ import './app.scss';
 
 function App() {
     return (
-        <div className="app">
-            react demo
-        </div>
+        <>
+            <div className="stan-loading-container">
+                <div className="stan-loading-content">
+                </div>
+            </div>
+            <div className="app" style={{display: 'flex'}}>
+                <div style={{margin: 'auto'}}>
+                    react demo modify
+                </div>
+            </div>
+        </>
     );
 }
 

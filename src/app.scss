@@ -1,23 +1,13 @@
 @import 'style/common/variables.scss';
-@import 'style/common/responsive.scss';
-@import 'style/common/overwrite-theme.scss';
-@import 'style/common/font-style.scss';
 
-html,
-body {
-    width: 100%;
-    height: 100%;
-    background: url('style/img/main-bg.jpg') no-repeat center center / cover;
-}
+@import 'style/common/default.scss';
 
-#root {
-    display: flex;
-    width: 100%;
-    height: 100%;
-}
+@import 'style/common-login-modal.scss';
+@import 'style/common-header.scss';
+@import 'style/common-paper-filter.scss';
 
-.app {
-    margin: auto;
-    color: $colorWhite;
-    font-family: $fontConsola;
-}
+@import 'style/page-home.scss';
+@import 'style/page-catalogue.scss';
+@import 'style/page-paper.scss';
+@import 'style/page-edit-paper.scss';
+@import 'style/page-user.scss';

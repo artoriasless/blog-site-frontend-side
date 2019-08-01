@@ -1,0 +1,186 @@
+@import 'style/common/variables.scss';
+
+.app {
+
+    .page-section-header {
+        position: fixed;
+        display: block;
+        height: 2.5rem;
+        line-height: 2rem;
+        top: 0;
+        left: 0;
+        right: 0;
+        padding: 0.25rem;
+        background-color: $colorWhite;
+        z-index: 999999;
+
+        &:after {
+            content: "";
+            position: absolute;
+            display: block;
+            height: 1px;
+            left: -1000px;
+            right: -1000px;
+            bottom: 0;
+            background-color: $colorGreyLighter;
+        }
+
+        .page-section-header-container {
+            max-width: 1200px;
+            height: 2rem;
+            margin: 0 auto;
+
+            .navbar-left {
+                float: left;
+            }
+
+            .navbar-right {
+                float: right;
+            }
+
+            .logo-container {
+
+                .logo {
+                    display: block;
+                    width: 2rem;
+                    height: 2rem;
+                    border-radius: 50%;
+                    background: url('style/img/logo.jpg') no-repeat center center / cover;
+                }
+            }
+
+            .navbar {
+                display: block;
+                height: 2rem;
+                padding: 0;
+
+                .navbar-toggler {
+                    display: none;
+                    width: 2rem;
+                    height: 2rem;
+                    line-height: 2rem;
+                    padding: 0;
+                    border: none;
+                    text-align: center;
+                    background: transparent;
+                }
+
+                .dropdown-menu {
+                    min-width: 0;
+                    padding: 0;
+                    margin: 0.25rem 0 0;
+                    border-top: none;
+                    border-radius: 0 0 0.25rem 0.25rem;
+                    overflow: hidden;
+                    text-align: center;
+
+                    .dropdown-item {
+                        height: 2rem;
+                        line-height: 2rem;
+                        padding: 0 1rem;
+                        color: $colorTheme;
+
+                        &:hover {
+                            color: $colorThemeDark;
+                        }
+
+                        &:active {
+                            background-color: #f8f9fa;
+                        }
+                    }
+                }
+
+                .nav-link {
+                    height: 2rem;
+                    line-height: 2rem;
+                    padding: 0 1rem;
+                    text-align: center;
+                    cursor: pointer;
+                }
+
+                .user-center-link {
+                    .user-avatar {
+                        display: block;
+                        width: 1.6rem;
+                        height: 1.6rem;
+                        line-height: 2rem;
+                        margin: 0.2rem 0.25rem 0.2rem 0;
+                        border-radius: 50%;
+                        float: left;
+                    }
+
+                    .user-name {
+                        display: inline-block;
+                        max-width: 15em;
+                        height: 2rem;
+                        line-height: 2rem;
+                        overflow: hidden;
+                        white-space: nowrap;
+                        text-overflow: ellipsis;
+
+                        &:before {
+                            content: "Welcome, ";
+                            color: $colorOrange;
+                        }
+                    }
+
+                    .user-name.inactivated {
+                        color: $colorGrey;
+                    }
+                }
+
+                .logout-link {
+                    color: $colorRed;
+                }
+            }
+        }
+    }
+}
+
+/* 小屏设备 */
+@media (max-width: 575.98px) {
+    .app {
+
+        .page-section-header {
+
+            .page-section-header-container {
+
+                .navbar {
+
+                    .navbar-toggler {
+                        display: block;
+                    }
+
+                    .navbar-collapse {
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        right: 0;
+                        margin-top: 2.5rem;
+                        background-color: $colorWhiteDarker;
+                    }
+
+                    .dropdown-menu {
+                        margin: 0;
+                        border: none;
+                        border-radius: 0;
+                        overflow: hidden;
+                        text-align: center;
+
+                        .dropdown-item {
+                            height: 2rem;
+                            line-height: 2rem;
+                            padding: 0 1rem;
+                        }
+                    }
+
+                    .user-center-link {
+                        .user-avatar {
+                            display: none;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

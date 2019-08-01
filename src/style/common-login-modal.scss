@@ -1,0 +1,42 @@
+@import 'style/common/variables.scss';
+
+@import 'plugins/switch-button/index.scss';
+
+#switch_In_Up_container {
+    margin: 0.25rem 0 0.75rem;
+
+    .toggle {
+        display: block;
+        min-width: 100%;
+        min-height: 2rem;
+        line-height: 2rem;
+        padding: 0;
+
+        .toggle-group {
+            .toggle-on,
+            .toggle-off {
+                height: 2rem;
+                line-height: calc(2rem - 2px);
+                padding: 0;
+                color: #fff;
+                background-color: $colorThemeDark;
+                border: 1px solid $colorThemeDark;
+            }
+
+            .toggle-handle {
+                display: block;
+                height: calc(2rem - 2px);
+                background-color: $colorIndigo;
+                border: 1px solid $colorIndigo;
+                pointer-events: none;
+            }
+        }
+    }
+}
+
+#loginModal #loginForm .reset-pwd-link {
+    height: 25px;
+    line-height: 25px;
+    font-size: 0.75em;
+    float: right;
+}
