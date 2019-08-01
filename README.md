@@ -5,8 +5,8 @@ frontend-side of enhanced blog site belongs to me, version 5.0（[中文](https:
 
 > blog site : **[stanby.cn](http://www.stanby.cn)**
 
-## brief
-*   it uses **node@12.6.0** and **`npm@6.9.x`** as local development&runtime environment
+## Brief
+*   it uses **`node@12.6.0`** and **`npm@6.9.x`** as local development&runtime environment
 *   it uses **`React@~16.8.0`** as javascript framework
 *   it uses **`Scss`**(**`Sass`**) to customize style
 *   it uses **`Bootstrap`** as ui structure
@@ -28,13 +28,13 @@ frontend-side of enhanced blog site belongs to me, version 5.0（[中文](https:
         1. 2011-11-12 11:11:11
     ```
 *   **`npm run pusher-publish`**
-    >   used to publish static resources in local(all files in the directory **build**) to *OSS`**
+    >   used to publish static resources in local(all files in the directory(**build**) to **OSS**
 
 ## Tech Stack
 *   **Scaffold**
     *   based on **`create-react-app`** , customize the bundle configuration after running **`npm run eject`**
 *   **JavaScript Framework**
-    *   it uses **`React@~16.8.0`** , and some new features like **Hook** , **`Effect`** and so on also would be imported
+    *   it uses **`React@~16.8.0`** , and some new features like **`Hook`** , **`Effect`** and so on also would be imported
 *   **UI Framework**
     *   in order to avoid some unnecessary extra work for updateing, it uses **`Bootstrap`** , yes , same with ths previous version(**blog site version 4.0**)
 
