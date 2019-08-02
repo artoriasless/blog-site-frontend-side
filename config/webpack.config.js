@@ -156,6 +156,16 @@ module.exports = function (webpackEnv) {
                 PnpWebpackPlugin,
                 new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson]),
             ],
+            alias: {
+                'actions': path.resolve(process.cwd(), 'src/actions'),
+                'components': path.resolve(process.cwd(), 'src/components'),
+                'containers': path.resolve(process.cwd(), 'src/containers'),
+                'lib': path.resolve(process.cwd(), 'src/lib'),
+                'plugins': path.resolve(process.cwd(), 'src/plugins'),
+                'reducers': path.resolve(process.cwd(), 'src/reducers'),
+                'style': path.resolve(process.cwd(), 'src/style'),
+                'config': path.resolve(process.cwd(), 'src/config.js'),
+            }
         },
         resolveLoader: {
             plugins: [
