@@ -160,6 +160,7 @@ module.exports = function (webpackEnv) {
                 'actions': path.resolve(process.cwd(), 'src/actions'),
                 'components': path.resolve(process.cwd(), 'src/components'),
                 'containers': path.resolve(process.cwd(), 'src/containers'),
+                'pages': path.resolve(process.cwd(), 'src/pages'),
                 'lib': path.resolve(process.cwd(), 'src/lib'),
                 'plugins': path.resolve(process.cwd(), 'src/plugins'),
                 'reducers': path.resolve(process.cwd(), 'src/reducers'),
