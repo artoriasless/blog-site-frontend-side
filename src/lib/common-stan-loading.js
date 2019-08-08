@@ -1,4 +1,4 @@
-const stanLoading = (hide) => {
+const stanLoading = hide => {
     var loadingDom = '' +
         `<div class="stan-loading-container">
             <div class="stan-loading-content"></div>

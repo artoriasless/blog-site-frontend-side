@@ -1,4 +1,4 @@
-const stanAlert = () => {
+const stanAlert = (options = {}) => {
     /**
      *  通用的 alert 方法，警告内容支持 html 格式标签
      *  @param {object} [options] （可选）相关参数、设定
@@ -9,25 +9,24 @@ const stanAlert = () => {
      *      {number}  [shownExpires] （可选）指定 alert 多少秒后自动隐藏，默认 3 秒，若传入的 autoClose 为 false ，此参数将不生效
      *      {string}  [textAlign]    （可选）指定 alert 中主体内容的文案对齐方式，默认 left ，可传入值为 left/center/right
      */
-    var typeMap = {
+    const typeMap = {
         'info': 'info',
         'danger': 'danger',
         'warning': 'warning',
         'success': 'success',
     };
-    var alignMap = {
+    const alignMap = {
         'left': 'left',
         'center': 'center',
         'right': 'right',
     };
-    var options = arguments[0] || {};
-    var alertType = options.type ? (typeMap[options.type] || 'danger') : 'danger';
-    var alertTitle = options.title ? `<strong>${options.title}</strong><br/>` : '';
-    var alertContent = options.content || '';
-    var autoClose  = Boolean((options.autoClose === undefined) ? true : options.autoClose);
-    var shownExpires = Number((options.shownExpires === undefined) ? 3 : options.shownExpires);
-    var textAlign = options.textAlign ? (alignMap[options.textAlign] || 'left') : 'left';
-    var alertDom = '' +
+    const alertType = options.type ? (typeMap[options.type] || 'danger') : 'danger';
+    const alertTitle = options.title ? `<strong>${options.title}</strong><br/>` : '';
+    const alertContent = options.content || '';
+    const autoClose  = Boolean((options.autoClose === undefined) ? true : options.autoClose);
+    const shownExpires = Number((options.shownExpires === undefined) ? 3 : options.shownExpires);
+    const textAlign = options.textAlign ? (alignMap[options.textAlign] || 'left') : 'left';
+    const alertDom = '' +
         `<div class="stan-alert-container">
             <div class="alert alert-${alertType}" role="alert">
                 <button type="button" class="close"><span aria-hidden="true">&times;</span></button>
@@ -37,7 +36,7 @@ const stanAlert = () => {
                 </div>
             </div>
         </div>`;
-    var autoCloseFunc;
+    let autoCloseFunc;
 
     if (autoClose) {
         autoCloseFunc = setTimeout(function() {

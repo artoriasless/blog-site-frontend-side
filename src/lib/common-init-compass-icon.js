@@ -1,4 +1,5 @@
-const locationCompass = () => {const $root = $('#root');
+const locationCompass = () => {
+    const $root = $('#root');
     const $compassIcon = $('#compassIcon');
     const $app = $root.find('.app');
     const compassHeight = $compassIcon.height();

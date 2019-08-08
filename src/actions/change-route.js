@@ -1,4 +1,6 @@
-const changeRoute = () => {
+import store from 'reducers';
+
+const CHANGE_ROUTE = () => {
     const url = document.URL;
     const reg = /^[^/]+\/\/[^/]+/;
     const current = url.replace(reg, '');
@@ -10,5 +12,6 @@ const changeRoute = () => {
         },
     });
 };
+const changeRoute = () => store.dispatch(CHANGE_ROUTE());
 
 export default changeRoute;

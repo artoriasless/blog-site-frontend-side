@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { changeRoute as changeRouteAction } from 'actions';
+import { changeRoute } from 'actions';
 import {
     Navbar,
     LoginModal,
@@ -43,7 +43,7 @@ const UI_PageEditPaper = function(props) {
 };
 const mapState2Props = (state, props) => state.appReducer; // eslint-disable-line
 const mapDispatch2Props = (dispatch, props) => ({ // eslint-disable-line
-    changeRoute: () => dispatch(changeRouteAction()),
+    changeRoute,
 });
 let PageEditPaper;
 

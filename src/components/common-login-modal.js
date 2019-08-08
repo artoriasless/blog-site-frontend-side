@@ -1,8 +1,84 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
+import {
+    login,
+    register
+} from 'actions';
+import { stanAlert } from 'lib';
+
 import 'plugins/switch-button/index.js';
+
+const submitValidate = (formData, type) => {
+    const emailReg = /^[^@]+@[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+$/;
+    const pwdReg = /^\S{10,18}$/;
+    const alertInfo = {
+        title: 'Warning!',
+        email: {
+            null: 'please type the email address!',
+            illegal: 'please type legal email address!',
+        },
+        password: {
+            null: 'please type the password!',
+            illegal: 'please type legal password!<br/>pwd length from 10 to 16.',
+        },
+        confirmPwd: {
+            null: 'please retype the password to check!',
+            illegal: 'the password to confirm is inconsistent!',
+        },
+    };
+
+    if (!formData.email) {
+        stanAlert({
+            title: alertInfo.title,
+            content: alertInfo.email.null,
+        });
+
+        return false;
+    } else if (!emailReg.test(formData.email)) {
+        stanAlert({
+            title: alertInfo.title,
+            content: alertInfo.email.illegal,
+        });
+
+        return false;
+    } else if (!formData.password) {
+        stanAlert({
+            title: alertInfo.title,
+            content: alertInfo.password.null,
+        });
+
+        return false;
+    } else if (!pwdReg.test(formData.password)) {
+        stanAlert({
+            title: alertInfo.title,
+            content: alertInfo.password.illegal,
+        });
+
+        return false;
+    }
+    //  如果是注册，需要再校验确认的模态框
+    if (type === 'register') {
+        if (!formData.confirmPwd) {
+            stanAlert({
+                title: alertInfo.title,
+                content: alertInfo.confirmPwd.null,
+            });
+
+            return false;
+        } else if (formData.password !== formData.confirmPwd) {
+            stanAlert({
+                title: alertInfo.title,
+                content: alertInfo.confirmPwd.illegal,
+            });
+
+            return false;
+        }
+    }
+
+    return true;
+};
 
 const Header = function() {
     return (
@@ -20,15 +96,23 @@ const Header = function() {
         </div>
     );
 };
-const LoginForm = function() {
-    const resetPwdHandler = (evt) => { // eslint-disable-line
+const LoginForm = function(props) {
+    const {
+        loginForm,
+        setLoginForm,
+        submitForm
+    } = props;
+    const formChangeHandler = (evt, key) => {
+        const val = evt.target.value || '';
+        const originalLoginForm = JSON.parse(JSON.stringify(loginForm));
 
+        originalLoginForm[key] = val;
+        setLoginForm(originalLoginForm);
     };
-    const formChangeHandler = (evt) => { // eslint-disable-line
-
-    };
-    const enterLoginHandler = (evt) => { // eslint-disable-line
-
+    const enterLoginHandler = evt => {
+        if (evt.keyCode === 13) {
+            submitForm();
+        }
     };
 
     return (
@@ -42,7 +126,8 @@ const LoginForm = function() {
                     className="form-control"
                     type="email"
                     placeholder="type your email"
-                    onChange={ event => formChangeHandler(event) }
+                    onChange={ event => formChangeHandler(event, 'email') }
+                    onKeyDown={ event => enterLoginHandler(event) }
                 />
             </div>
             <div className="form-group">
@@ -53,7 +138,6 @@ const LoginForm = function() {
                     <a
                         className="reset-pwd-link"
                         href="javascript:;"
-                        onClick={ event => resetPwdHandler(event) }
                     >
                         forget pwd?
                     </a>
@@ -63,19 +147,30 @@ const LoginForm = function() {
                     className="form-control"
                     type="password"
                     placeholder="type your password"
-                    onChange={ event => formChangeHandler(event) }
+                    onChange={ event => formChangeHandler(event, 'password') }
                     onKeyDown={ event => enterLoginHandler(event) }
                 />
             </div>
         </form>
     );
 };
-const RegisterForm = function() {
-    const formChangeHandler = (evt) => { // eslint-disable-line
+const RegisterForm = function(props) {
+    const {
+        registerForm,
+        setRegisterForm,
+        submitForm
+    } = props;
+    const formChangeHandler = (evt, key) => {
+        const val = evt.target.value || '';
+        const originalRegisterForm = JSON.parse(JSON.stringify(registerForm));
 
+        originalRegisterForm[key] = val;
+        setRegisterForm(originalRegisterForm);
     };
-    const enterLoginHandler = (evt) => { // eslint-disable-line
-
+    const enterRegisterHandler = evt => {
+        if (evt.keyCode === 13) {
+            submitForm();
+        }
     };
 
     return (
@@ -89,7 +184,8 @@ const RegisterForm = function() {
                     className="form-control"
                     type="email"
                     placeholder="type your email"
-                    onChange={ event => formChangeHandler(event) }
+                    onChange={ event => formChangeHandler(event, 'email') }
+                    onKeyDown={ event => enterRegisterHandler(event) }
                 />
             </div>
             <div className="form-group">
@@ -101,44 +197,57 @@ const RegisterForm = function() {
                     className="form-control"
                     type="password"
                     placeholder="type your password"
-                    onChange={ event => formChangeHandler(event) }
+                    onChange={ event => formChangeHandler(event, 'password') }
+                    onKeyDown={ event => enterRegisterHandler(event) }
                 />
             </div>
             <div className="form-group">
-                <label htmlFor="register_passwordConfirm">
+                <label htmlFor="register_confirmPwd">
                     password
                 </label>
                 <input
-                    id="register_passwordConfirm"
+                    id="register_confirmPwd"
                     className="form-control"
                     type="password"
                     placeholder="confirm your password"
-                    onChange={ event => formChangeHandler(event) }
-                    onKeyDown={ event => enterLoginHandler(event) }
+                    onChange={ event => formChangeHandler(event, 'confirmPwd') }
+                    onKeyDown={ event => enterRegisterHandler(event) }
                 />
             </div>
         </form>
     );
 };
 const Body = function(props) {
-    const SwitchButton = function() {
-        useEffect(() => {
-            $('#switchBtn')
-                .bootstrapToggle({
-                    on: 'Login',
-                    off: 'Register',
-                    onstyle: 'default',
-                    offstyle: 'default',
-                })
-                .change(function() {
-                    var checked = $(this).prop('checked');
-                    var tabLink = checked ? 'loginTabLink' : 'registerTabLink';
+    const {
+        setSubmitType,
+        loginForm,
+        setLoginForm,
+        registerForm,
+        setRegisterForm,
+        submitForm,
+    } = props;
 
-                    $(`#sign_in_up_tab #${tabLink}`).tab('show');
-                });
-        }, []);
+    useEffect(() => {
+        $('#switchBtn')
+            .bootstrapToggle({
+                on: 'Login',
+                off: 'Register',
+                onstyle: 'default',
+                offstyle: 'default',
+            })
+            .change(function() {
+                const checked = $(this).prop('checked');
+                const tabLink = checked ? 'loginTabLink' : 'registerTabLink';
+                const submitType = checked ? 'login' : 'register';
 
-        return (
+                $(`#sign_in_up_tab #${tabLink}`).tab('show');
+                setSubmitType(submitType);
+            });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    return (
+        <div className="modal-body">
             <div id="switch_In_Up_container">
                 <input
                     id="switchBtn"
@@ -146,12 +255,6 @@ const Body = function(props) {
                     type="checkbox"
                 />
             </div>
-        );
-    };
-
-    return (
-        <div className="modal-body">
-            <SwitchButton/>
             <ul id="sign_in_up_tab" className="nav">
                 <li className="active">
                     <a
@@ -175,10 +278,9 @@ const Body = function(props) {
                     role="tabpanel"
                 >
                     <LoginForm
-                        updateLoginForm={ props.updateLoginForm }
-                        login={ props.login }
-                        resetPwd={ props.resetPwd }
-                        cache={ props.cache }
+                        loginForm={ loginForm }
+                        setLoginForm={ setLoginForm }
+                        submitForm={ submitForm }
                     />
                 </div>
                 <div
@@ -187,29 +289,57 @@ const Body = function(props) {
                     role="tabpanel"
                 >
                     <RegisterForm
-                        updateRegisterForm={ props.updateRegisterForm }
-                        register={ props.register }
-                        cache={ props.cache }
+                        registerForm={ registerForm }
+                        setRegisterForm={ setRegisterForm }
+                        submitForm={ submitForm }
                     />
                 </div>
             </div>
         </div>
     );
 };
-const Footer = function() {
-    const submitSignInUp = (evt) => { // eslint-disable-line
-
-    };
+const Footer = function(props) {
+    const { submitForm } = props;
 
     return (
         <div className="modal-footer">
-            <a className="btn btn-primary submit-btn" onClick={ event => submitSignInUp(event) }>
+            <a className="btn btn-primary submit-btn" onClick={ () => submitForm() }>
                 Submit
             </a>
         </div>
     );
 };
 const UI_LoginModal = function(props) {
+    const { login, register, isLogin } = props;
+    const [submitType, setSubmitType] = useState('login');
+    const [loginForm, setLoginForm] = useState({
+        email: '',
+        password: '',
+    });
+    const [registerForm, setRegisterForm] = useState({
+        email: '',
+        password: '',
+        confirmPwd: '',
+    });
+    const submitForm = () => {
+        switch(submitType) {
+        case 'login':
+            if (submitValidate(loginForm, 'login')) {
+                login(loginForm);
+            }
+            break;
+        case 'register':
+            if (submitValidate(registerForm, 'register')) {
+                register(registerForm);
+            }
+            break;
+        }
+    };
+
+    if (isLogin) {
+        return null;
+    }
+
     return (
         <div
             id="loginModal"
@@ -224,48 +354,56 @@ const UI_LoginModal = function(props) {
                 <div className="modal-content">
                     <Header/>
                     <Body
-                        updateRegisterForm={ props.updateRegisterForm }
-                        updateLoginForm={ props.updateLoginForm }
-                        login={ props.login }
-                        register={ props.register }
-                        resetPwd={ props.resetPwd }
-                        cache={ props.cache }
+                        setSubmitType={ setSubmitType }
+                        loginForm={ loginForm }
+                        setLoginForm={ setLoginForm }
+                        registerForm={ registerForm }
+                        setRegisterForm={ setRegisterForm }
+                        submitForm={ submitForm }
                     />
-                    <Footer
-                        register={ props.register }
-                        login={ props.login }
-                        cache={ props.cache }
-                    />
+                    <Footer submitForm={ submitForm }/>
                 </div>
             </div>
         </div>
     );
 };
-const mapState2Props = (state, props) => state.appReducer;  //  eslint-disable-line
-const mapDispatch2Props = (dispatch, props) => ({   //  eslint-disable-line
-    updateRegisterForm: () => null,
-    updateLoginForm: () => null,
-    register: () => null,
-    login: () => null,
-    resetPwd: () => null,
+const mapState2Props = (state, props) => state.appReducer; // eslint-disable-line
+const mapDispatch2Props = (dispatch, props) => ({ //  eslint-disable-line
+    login,
+    register,
 });
 let LoginModal;
 
+Footer.propTypes = {
+    submitForm: PropTypes.func.isRequired,
+};
+LoginForm.propTypes = {
+    loginForm: PropTypes.object,
+    setLoginForm: PropTypes.func.isRequired,
+    submitForm: PropTypes.func.isRequired,
+};
+RegisterForm.propTypes = {
+    registerForm: PropTypes.object,
+    setRegisterForm: PropTypes.func.isRequired,
+    submitForm: PropTypes.func.isRequired,
+};
 Body.propTypes = {
-    updateRegisterForm: PropTypes.func.isRequired,
-    updateLoginForm: PropTypes.func.isRequired,
-    login: PropTypes.func.isRequired,
-    register: PropTypes.func.isRequired,
-    resetPwd: PropTypes.func.isRequired,
-    cache: PropTypes.object,
+    setSubmitType: PropTypes.func.isRequired,
+    loginForm: PropTypes.object,
+    registerForm: PropTypes.object,
+    setLoginForm: PropTypes.func.isRequired,
+    setRegisterForm: PropTypes.func.isRequired,
+    submitForm: PropTypes.func.isRequired,
+};
+Footer.propTypes = {
+    submitType: PropTypes.string,
+    loginForm: PropTypes.object,
+    registerForm: PropTypes.object,
 };
 UI_LoginModal.propTypes = {
-    updateRegisterForm: PropTypes.func.isRequired,
-    updateLoginForm: PropTypes.func.isRequired,
+    isLogin: PropTypes.bool,
     login: PropTypes.func.isRequired,
     register: PropTypes.func.isRequired,
-    resetPwd: PropTypes.func.isRequired,
-    cache: PropTypes.object,
 };
 
 LoginModal = connect(

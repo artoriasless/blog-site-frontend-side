@@ -1,10 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import thunk from 'redux-thunk';
-import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import { Router, Route, browserHistory, IndexRoute } from 'react-router';
-import { syncHistoryWithStore, routerReducer } from 'react-router-redux';
+import { syncHistoryWithStore } from 'react-router-redux';
 
 import { App } from './containers';
 import {
@@ -16,17 +14,10 @@ import {
     PageActivate,
 } from './pages';
 
-import appReducer from './reducers';
+import store from './reducers';
 
 import './app.scss';
 
-const store = createStore(
-    combineReducers({
-        appReducer,
-        routing: routerReducer,
-    }),
-    applyMiddleware(thunk)
-);
 const history = syncHistoryWithStore(browserHistory, store);
 const router = (
     <Router history={ history }>

@@ -1,4 +1,4 @@
-const selectContent = ($element) => {
+const selectContent = $element => {
     /**
      * 通用的选中内容的方法
      * @param {object} [$element] （必传）$element 为原生 js 选择器返回的 dom 节点对象

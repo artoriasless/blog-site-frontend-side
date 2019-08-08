@@ -1,4 +1,4 @@
-const getQueryParam = (parameterName) => {
+const getQueryParam = parameterName => {
     const reg = new RegExp('(^|&)'+ parameterName + '=([^&]*)(&|$)');
     const url = window.location.search.substr(1).match(reg);
 

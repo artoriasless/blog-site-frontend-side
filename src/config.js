@@ -1,4 +1,5 @@
 const config = {
+    serverSideDomain: '//www.stanby.cn',
     ossPublic: {
         domain: 'https://monkingstand.oss-cn-beijing.aliyuncs.com',
         user: 'https://monkingstand.oss-cn-beijing.aliyuncs.com/user',

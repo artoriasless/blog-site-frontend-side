@@ -2,6 +2,8 @@ import React, { useEffect} from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
+import { getUserDefault } from 'actions';
+
 import {
     hideMainScrollerbar,
     initCompassIcon,
@@ -9,6 +11,10 @@ import {
 } from 'lib';
 
 const UI_App = function(props) {
+    if (!props.isLogin && !props.hasReqDefault) {
+        getUserDefault();
+    }
+
     useEffect(() => {
         hideMainScrollerbar();
         initCompassIcon();
@@ -23,11 +29,15 @@ const UI_App = function(props) {
     );
 };
 const mapState2Props = (state, props) => state.appReducer; // eslint-disable-line
-const mapDispatch2Props = (dispatch, props) => ({}); // eslint-disable-line
+const mapDispatch2Props = (dispatch, props) => ({ // eslint-disable-line
+    getUserDefault,
+});
 let App;
 
 UI_App.propTypes = {
     children: PropTypes.element,
+    isLogin: PropTypes.bool,
+    hasReqDefault: PropTypes.bool,
 };
 
 App = connect(

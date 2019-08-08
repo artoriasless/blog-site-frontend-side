@@ -1,15 +1,32 @@
+import config from 'config';
+
 const GET = 'GET';
 const POST = 'POST';
 const ajaxOptsMap = {
+    user: {
+        default: {
+            url: '/api/user/default', type: GET
+        },
+        login: {
+            url: '/api/user/login', type: POST
+        },
+        logout: {
+            url: '/api/user/logout', type: POST
+        },
+        register: {
+            url: '/api/user/register', type: POST
+        }
+    }
 };
 const getAjaxOpts = (ajaxName, ajaxData) => {
     const paramReg = /\/(:([^/]+))(\/|$)/;
     const keyArr = ajaxName.split('.');
-    let opts = Object.assign({}, ajaxOptsMap);
+    let opts = JSON.parse(JSON.stringify(ajaxOptsMap));
 
     keyArr.forEach(key => {
         opts = opts[key];
     });
+    opts.url = `${config.serverSideDomain}${opts.url}`;
     opts.data = ajaxData;
 
     // 检查请求地址中是否有 param 参数需要替换
@@ -40,6 +57,15 @@ const ajaxAction = (ajaxName, ajaxData, successFunc, failFunc) => {
      * @param {function} failFunc 对应 ajax 请求失败后的回调方法
      */
     const ajaxOpts = getAjaxOpts(ajaxName, ajaxData);
+
+    $.ajax(Object.assign(ajaxOpts, {
+        success: function(data) {
+            if (successFunc) successFunc(data);
+        },
+        error  : function(err) {
+            if (failFunc) failFunc(err);
+        },
+    }));
 };
 
 export default ajaxAction;
