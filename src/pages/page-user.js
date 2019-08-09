@@ -12,11 +12,16 @@ import {
 } from 'components';
 import {
     getRoute,
-    stanLoading
+    stanLoading,
+    stanAlert,
 } from 'lib';
 
 const UI_PageUser = function(props){
-    const { current, changeRoute } = props;
+    const {
+        current,
+        changeRoute,
+        isLogin,
+    } = props;
 
     useEffect(() => {
         stanLoading();
@@ -25,11 +30,26 @@ const UI_PageUser = function(props){
             stanLoading('hide');
             $('#root').removeClass('hidden').addClass('fade-in-animate');
         }, 500);
-    }, []);
+
+        if (!isLogin) {
+            stanLoading('hide');
+            stanAlert({
+                type: 'danger',
+                content: 'please login first, going to home page now...',
+                textAlign: 'center',
+                shownExpires: 0.75,
+            });
+
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 1500);
+        }
+    }, [isLogin]);
 
     if (getRoute() !== current) {
         changeRoute();
     }
+
     return (
         <div className="page-user" key={ props.current }>
             <Navbar/>
@@ -49,6 +69,7 @@ const mapDispatch2Props = () => ({
 let PageUser;
 
 UI_PageUser.propTypes = {
+    isLogin: PropTypes.bool,
     changeRoute: PropTypes.func.isRequired,
     current: PropTypes.string,
 };
