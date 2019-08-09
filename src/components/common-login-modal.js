@@ -96,13 +96,23 @@ const Header = function() {
         </div>
     );
 };
-const LoginForm = function(props) {
+const Body = function(props) {
     const {
+        setSubmitType,
         loginForm,
         setLoginForm,
-        submitForm
+        registerForm,
+        setRegisterForm,
+        submitForm,
     } = props;
-    const formChangeHandler = (evt, key) => {
+    const registerFormChangeHandler = (evt, key) => {
+        const val = evt.target.value || '';
+        const originalRegisterForm = JSON.parse(JSON.stringify(registerForm));
+
+        originalRegisterForm[key] = val;
+        setRegisterForm(originalRegisterForm);
+    };
+    const loginFormChangeHandler = (evt, key) => {
         const val = evt.target.value || '';
         const originalLoginForm = JSON.parse(JSON.stringify(loginForm));
 
@@ -114,118 +124,11 @@ const LoginForm = function(props) {
             submitForm();
         }
     };
-
-    return (
-        <form id="loginForm">
-            <div className="form-group">
-                <label htmlFor="login_email">
-                    email
-                </label>
-                <input
-                    id="login_email"
-                    className="form-control"
-                    type="email"
-                    placeholder="type your email"
-                    onChange={ event => formChangeHandler(event, 'email') }
-                    onKeyDown={ event => enterLoginHandler(event) }
-                />
-            </div>
-            <div className="form-group">
-                <div>
-                    <label htmlFor="login_password">
-                        password
-                    </label>
-                    <a
-                        className="reset-pwd-link"
-                        href="javascript:;"
-                    >
-                        forget pwd?
-                    </a>
-                </div>
-                <input
-                    id="login_password"
-                    className="form-control"
-                    type="password"
-                    placeholder="type your password"
-                    onChange={ event => formChangeHandler(event, 'password') }
-                    onKeyDown={ event => enterLoginHandler(event) }
-                />
-            </div>
-        </form>
-    );
-};
-const RegisterForm = function(props) {
-    const {
-        registerForm,
-        setRegisterForm,
-        submitForm
-    } = props;
-    const formChangeHandler = (evt, key) => {
-        const val = evt.target.value || '';
-        const originalRegisterForm = JSON.parse(JSON.stringify(registerForm));
-
-        originalRegisterForm[key] = val;
-        setRegisterForm(originalRegisterForm);
-    };
     const enterRegisterHandler = evt => {
         if (evt.keyCode === 13) {
             submitForm();
         }
     };
-
-    return (
-        <form id="registerForm">
-            <div className="form-group">
-                <label htmlFor="register_email">
-                    email
-                </label>
-                <input
-                    id="register_email"
-                    className="form-control"
-                    type="email"
-                    placeholder="type your email"
-                    onChange={ event => formChangeHandler(event, 'email') }
-                    onKeyDown={ event => enterRegisterHandler(event) }
-                />
-            </div>
-            <div className="form-group">
-                <label htmlFor="register_password">
-                    password
-                </label>
-                <input
-                    id="register_password"
-                    className="form-control"
-                    type="password"
-                    placeholder="type your password"
-                    onChange={ event => formChangeHandler(event, 'password') }
-                    onKeyDown={ event => enterRegisterHandler(event) }
-                />
-            </div>
-            <div className="form-group">
-                <label htmlFor="register_confirmPwd">
-                    password
-                </label>
-                <input
-                    id="register_confirmPwd"
-                    className="form-control"
-                    type="password"
-                    placeholder="confirm your password"
-                    onChange={ event => formChangeHandler(event, 'confirmPwd') }
-                    onKeyDown={ event => enterRegisterHandler(event) }
-                />
-            </div>
-        </form>
-    );
-};
-const Body = function(props) {
-    const {
-        setSubmitType,
-        loginForm,
-        setLoginForm,
-        registerForm,
-        setRegisterForm,
-        submitForm,
-    } = props;
 
     useEffect(() => {
         $('#switchBtn')
@@ -277,22 +180,89 @@ const Body = function(props) {
                     className="tab-pane fade show active"
                     role="tabpanel"
                 >
-                    <LoginForm
-                        loginForm={ loginForm }
-                        setLoginForm={ setLoginForm }
-                        submitForm={ submitForm }
-                    />
+                    <form id="loginForm">
+                        <div className="form-group">
+                            <label htmlFor="login_email">
+                                email
+                            </label>
+                            <input
+                                id="login_email"
+                                className="form-control"
+                                type="email"
+                                placeholder="type your email"
+                                onChange={ event => loginFormChangeHandler(event, 'email') }
+                                onKeyDown={ event => enterLoginHandler(event) }
+                            />
+                        </div>
+                        <div className="form-group">
+                            <div>
+                                <label htmlFor="login_password">
+                                    password
+                                </label>
+                                <a
+                                    className="reset-pwd-link"
+                                    href="javascript:;"
+                                >
+                                    forget pwd?
+                                </a>
+                            </div>
+                            <input
+                                id="login_password"
+                                className="form-control"
+                                type="password"
+                                placeholder="type your password"
+                                onChange={ event => loginFormChangeHandler(event, 'password') }
+                                onKeyDown={ event => enterLoginHandler(event) }
+                            />
+                        </div>
+                    </form>
                 </div>
                 <div
                     id="content_register"
                     className="tab-pane fade"
                     role="tabpanel"
                 >
-                    <RegisterForm
-                        registerForm={ registerForm }
-                        setRegisterForm={ setRegisterForm }
-                        submitForm={ submitForm }
-                    />
+                    <form id="registerForm">
+                        <div className="form-group">
+                            <label htmlFor="register_email">
+                                email
+                            </label>
+                            <input
+                                id="register_email"
+                                className="form-control"
+                                type="email"
+                                placeholder="type your email"
+                                onChange={ event => registerFormChangeHandler(event, 'email') }
+                                onKeyDown={ event => enterRegisterHandler(event) }
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="register_password">
+                                password
+                            </label>
+                            <input
+                                id="register_password"
+                                className="form-control"
+                                type="password"
+                                placeholder="type your password"
+                                onChange={ event => registerFormChangeHandler(event, 'password') }
+                                onKeyDown={ event => enterRegisterHandler(event) }
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="register_confirmPwd">
+                                password
+                            </label>
+                            <input
+                                id="register_confirmPwd"
+                                className="form-control"
+                                type="password"
+                                placeholder="confirm your password"
+                                onChange={ event => registerFormChangeHandler(event, 'confirmPwd') }
+                                onKeyDown={ event => enterRegisterHandler(event) }
+                            />
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -368,23 +338,13 @@ const UI_LoginModal = function(props) {
     );
 };
 const mapState2Props = (state, props) => state.appReducer; // eslint-disable-line
-const mapDispatch2Props = (dispatch, props) => ({ //  eslint-disable-line
+const mapDispatch2Props = () => ({
     login,
     register,
 });
 let LoginModal;
 
 Footer.propTypes = {
-    submitForm: PropTypes.func.isRequired,
-};
-LoginForm.propTypes = {
-    loginForm: PropTypes.object,
-    setLoginForm: PropTypes.func.isRequired,
-    submitForm: PropTypes.func.isRequired,
-};
-RegisterForm.propTypes = {
-    registerForm: PropTypes.object,
-    setRegisterForm: PropTypes.func.isRequired,
     submitForm: PropTypes.func.isRequired,
 };
 Body.propTypes = {
