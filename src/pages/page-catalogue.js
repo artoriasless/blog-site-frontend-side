@@ -46,7 +46,7 @@ const UI_PageCatalogue = function(props) {
     );
 };
 const mapState2Props = (state, props) => state.appReducer;  //  eslint-disable-line
-const mapDispatch2Props = (dispatch, props) => ({ // eslint-disable-line
+const mapDispatch2Props = () => ({
     changeRoute,
 });
 let PageCatalogue;

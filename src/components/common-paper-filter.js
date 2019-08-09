@@ -134,8 +134,8 @@ const UI_PaperFilter = function(props) {
         </>
     );
 };
-const mapState2Props = (state, props) => state.appReducer;  //  eslint-disable-line
-const mapDispatch2Props = (dispatch, props) => ({   //  eslint-disable-line
+const mapState2Props = (state, props) => state.appReducer; // eslint-disable-line
+const mapDispatch2Props = () => ({
     getTagFilter: () => null,
     getTimelineFilter: () => null,
     getLatestFilter: () => null,

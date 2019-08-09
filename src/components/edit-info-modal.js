@@ -171,7 +171,7 @@ const UI_EditInfoModal = function(props) {
     );
 };
 const mapState2Props = (state, props) => state.appReducer; // eslint-disable-line
-const mapDispatch2Props = (dispatch, props) => ({ // eslint-disable-line
+const mapDispatch2Props = () => ({
     updateUserInfoForm: () => null,
     updateUserInfo: () => null,
 });

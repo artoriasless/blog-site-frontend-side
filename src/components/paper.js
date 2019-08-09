@@ -77,7 +77,7 @@ const UI_Paper = function(props) {
     }
 };
 const mapState2Props = (state, props) => state.appReducer; // eslint-disable-line
-const mapDispatch2Props = (dispatch, props) => ({ // eslint-disable-line
+const mapDispatch2Props = () => ({
     getPaper: () => null,
     resetReplyForm: () => null,
     deleteReply: () => null,

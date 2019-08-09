@@ -15,7 +15,7 @@ const UI_ActivateAccount = function(props) {
     return null;
 };
 const mapState2Props = (state, props) => state.appReducer; // eslint-disable-line
-const mapDispatch2Props = (dispatch, props) => ({  // eslint-disable-line
+const mapDispatch2Props = () => ({
     activateAccount: () => null,
 });
 let ActivateAccount;
