@@ -2,7 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const PagerFoot = function(props) {
-    const { current, pageCount, jumpHandler } = props.config;
+    const {
+        current,
+        pageCount,
+        jumpHandler
+    } = props;
     const pageLinkClass = (current === pageCount) ? 'page-link disable' : 'page-link';
     const pageJump = (evt, target) => { //  eslint-disable-line
         jumpHandler({
@@ -23,7 +27,11 @@ const PagerFoot = function(props) {
     );
 };
 const PagerNext = function(props) {
-    const { current, pageCount, jumpHandler } = props.config;
+    const {
+        current,
+        pageCount,
+        jumpHandler
+    } = props;
     const pageLinkClass = (current === pageCount) ? 'page-link disable' : 'page-link';
     const pageJump = (evt, target) => { //  eslint-disable-line
         jumpHandler({
@@ -44,7 +52,11 @@ const PagerNext = function(props) {
     );
 };
 const PagerNextEllipsis = function(props) {
-    const { current, pageCount, jumpHandler } = props.config;
+    const {
+        current,
+        pageCount,
+        jumpHandler
+    } = props;
     const pageArr = [];
     const pageJump = (evt, target) => { //  eslint-disable-line
         jumpHandler({
@@ -58,7 +70,7 @@ const PagerNextEllipsis = function(props) {
                 <a
                     className="page-link"
                     href="javascript:;"
-                    onClick={ event => this.clickHandler(event, (current + i + 1)) }
+                    onClick={ event => pageJump(event, (current + i + 1)) }
                 >
                     { current + i + 1 }
                 </a>
@@ -102,19 +114,25 @@ const PagerNextEllipsis = function(props) {
     return pageArr;
 };
 const PagerCurrent = function(props) {
+    const { current } = props;
+
     return (
         <li className="page-item">
             <a
                 className="page-link active"
                 href="javascript:;"
             >
-                { props.config.current }
+                { current }
             </a>
         </li>
     );
 };
 const PagerPrevEllipsis = function(props) {
-    const { current, pageCount, jumpHandler } = props.config;
+    const {
+        current,
+        pageCount,
+        jumpHandler
+    } = props;
     const pageArr = [];
     const pageJump = (evt, target) => { //  eslint-disable-line
         jumpHandler({
@@ -128,7 +146,7 @@ const PagerPrevEllipsis = function(props) {
                 <a
                     className="page-link"
                     href="javascript:;"
-                    onClick={ event => this.clickHandler(event, (current - i - 1)) }
+                    onClick={ event => pageJump(event, (current - i - 1)) }
                 >
                     { current - i - 1 }
                 </a>
@@ -172,7 +190,7 @@ const PagerPrevEllipsis = function(props) {
     return pageArr;
 };
 const PagerPrev = function(props) {
-    const { current, jumpHandler } = props.config;
+    const { current, jumpHandler } = props;
     const pageLinkClass = (current === 1) ? 'page-link disable' : 'page-link';
     const pageJump = (evt, target) => { //  eslint-disable-line
         jumpHandler({
@@ -193,7 +211,7 @@ const PagerPrev = function(props) {
     );
 };
 const PagerHead = function(props) {
-    const { current, jumpHandler } = props.config;
+    const { current, jumpHandler } = props;
     const pageLinkClass = (current === 1) ? 'page-link disable' : 'page-link';
     const pageJump = (evt, target) => { //  eslint-disable-line
         jumpHandler({
@@ -213,40 +231,10 @@ const PagerHead = function(props) {
         </li>
     );
 };
-let Pager;
-
-PagerFoot.propTypes = {
-    config: PropTypes.object,
-};
-PagerNext.propTypes = {
-    config: PropTypes.object,
-};
-PagerNextEllipsis.propTypes = {
-    config: PropTypes.object,
-};
-PagerCurrent.propTypes = {
-    config: PropTypes.object,
-};
-PagerPrevEllipsis.propTypes = {
-    config: PropTypes.object,
-};
-PagerPrev.propTypes = {
-    config: PropTypes.object,
-};
-PagerHead.propTypes = {
-    config: PropTypes.object,
-};
-
-Pager = function(props) {
+const Pager = function(props) {
     const { data, jumpHandler } = props;
     const { current, dataCount } = data;
     const pageCount = Math.ceil(dataCount / 10);
-    const config = {
-        current,
-        dataCount,
-        pageCount,
-        jumpHandler,
-    };
 
     if (pageCount === 1) {
         return null;
@@ -258,18 +246,66 @@ Pager = function(props) {
                 </div>
                 <nav className="pager-content" aria-label="Page navigation example">
                     <ul className="pagination">
-                        <PagerHead config={ config }/>
-                        <PagerPrev config={ config }/>
-                        <PagerPrevEllipsis config={ config }/>
-                        <PagerCurrent config={ config }/>
-                        <PagerNextEllipsis config={ config }/>
-                        <PagerNext config={ config }/>
-                        <PagerFoot config={ config }/>
+                        <PagerHead current={ current } jumpHandler={ jumpHandler }/>
+                        <PagerPrev current={ current } jumpHandler={ jumpHandler }/>
+                        <PagerPrevEllipsis
+                            current={ current }
+                            jumpHandler={ jumpHandler }
+                            pageCount={ pageCount }
+                        />
+                        <PagerCurrent current={ current }/>
+                        <PagerNextEllipsis
+                            current={ current }
+                            jumpHandler={ jumpHandler }
+                            pageCount={ pageCount }
+                        />
+                        <PagerNext
+                            current={ current }
+                            jumpHandler={ jumpHandler }
+                            pageCount={ pageCount }
+                        />
+                        <PagerFoot
+                            current={ current }
+                            jumpHandler={ jumpHandler }
+                            pageCount={ pageCount }
+                        />
                     </ul>
                 </nav>
             </div>
         );
     }
+};
+
+PagerFoot.propTypes = {
+    current: PropTypes.number,
+    jumpHandler: PropTypes.func.isRequired,
+    pageCount: PropTypes.number
+};
+PagerNext.propTypes = {
+    current: PropTypes.number,
+    jumpHandler: PropTypes.func.isRequired,
+    pageCount: PropTypes.number
+};
+PagerNextEllipsis.propTypes = {
+    current: PropTypes.number,
+    jumpHandler: PropTypes.func.isRequired,
+    pageCount: PropTypes.number
+};
+PagerCurrent.propTypes = {
+    current: PropTypes.number,
+};
+PagerPrevEllipsis.propTypes = {
+    current: PropTypes.number,
+    jumpHandler: PropTypes.func.isRequired,
+    pageCount: PropTypes.number
+};
+PagerPrev.propTypes = {
+    current: PropTypes.number,
+    jumpHandler: PropTypes.func.isRequired
+};
+PagerHead.propTypes = {
+    current: PropTypes.number,
+    jumpHandler: PropTypes.func.isRequired
 };
 
 export default Pager;
