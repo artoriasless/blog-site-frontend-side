@@ -33,71 +33,73 @@ const Body = function(props) {
     };
 
     return (
-        <form id="editInfoForm">
-            <div className="form-group">
-                <label htmlFor="editInfo_userName">
-                    user name
-                </label>
-                <input
-                    id="editInfo_userName"
-                    className="form-control"
-                    type="text"
-                    placeholder="type your user name"
-                    name="userName"
-                    onChange={ event => formChangeHandler(event) }
-                />
-            </div>
-            <div className="form-group">
-                <label>
-                    gender
-                </label>
-                <div className="gender-radio-contaienr">
-                    <div className="stan-radio-container">
-                        <label className="stan-radio">
-                            <i className="fa fa-mars"></i>
-                            Male
-                            <input
-                                className="stan-radio-input"
-                                type="radio"
-                                name="gender"
-                                value="0"
-                                defaultChecked="true"
-                                onChange={ event => formChangeHandler(event) }
-                            />
-                            <div className="stan-radio-indicator"></div>
-                        </label>
-                    </div>
-                    <div className="stan-radio-container">
-                        <label className="stan-radio">
-                            <i className="fa fa-venus"></i>
-                            Female
-                            <input
-                                className="stan-radio-input"
-                                type="radio"
-                                name="gender"
-                                value="1"
-                                onChange={ event => formChangeHandler(event) }
-                            />
-                            <div className="stan-radio-indicator"></div>
-                        </label>
-                    </div>
-                    <div className="stan-radio-container">
-                        <label className="stan-radio">
-                            <i className="fa fa-transgender"></i>
-                            Transgender
-                            <input
-                                className="stan-radio-input"
-                                type="radio"
-                                name="gender"
-                                value="2"
-                                onChange={ event => formChangeHandler(event) }
-                            />
-                            <div className="stan-radio-indicator"></div>
-                        </label>
+        <div className="modal-body">
+            <form id="editInfoForm">
+                <div className="form-group">
+                    <label htmlFor="editInfo_userName">
+                        user name
+                    </label>
+                    <input
+                        id="editInfo_userName"
+                        className="form-control"
+                        type="text"
+                        placeholder="type your user name"
+                        name="userName"
+                        onChange={ event => formChangeHandler(event) }
+                    />
+                </div>
+                <div className="form-group">
+                    <label>
+                        gender
+                    </label>
+                    <div className="gender-radio-contaienr">
+                        <div className="stan-radio-container">
+                            <label className="stan-radio">
+                                <i className="fa fa-mars"></i>
+                                Male
+                                <input
+                                    className="stan-radio-input"
+                                    type="radio"
+                                    name="gender"
+                                    value="0"
+                                    defaultChecked="true"
+                                    onChange={ event => formChangeHandler(event) }
+                                />
+                                <div className="stan-radio-indicator"></div>
+                            </label>
+                        </div>
+                        <div className="stan-radio-container">
+                            <label className="stan-radio">
+                                <i className="fa fa-venus"></i>
+                                Female
+                                <input
+                                    className="stan-radio-input"
+                                    type="radio"
+                                    name="gender"
+                                    value="1"
+                                    onChange={ event => formChangeHandler(event) }
+                                />
+                                <div className="stan-radio-indicator"></div>
+                            </label>
+                        </div>
+                        <div className="stan-radio-container">
+                            <label className="stan-radio">
+                                <i className="fa fa-transgender"></i>
+                                Transgender
+                                <input
+                                    className="stan-radio-input"
+                                    type="radio"
+                                    name="gender"
+                                    value="2"
+                                    onChange={ event => formChangeHandler(event) }
+                                />
+                                <div className="stan-radio-indicator"></div>
+                            </label>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </form>
+            </form>
+        </div>
     );
 };
 const Footer = function(props) {
