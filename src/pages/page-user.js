@@ -21,6 +21,7 @@ const UI_PageUser = function(props){
         current,
         changeRoute,
         isLogin,
+        hasReqDefault,
     } = props;
 
     useEffect(() => {
@@ -31,19 +32,21 @@ const UI_PageUser = function(props){
             $('#root').removeClass('hidden').addClass('fade-in-animate');
         }, 500);
 
-        if (!isLogin) {
+        if (!isLogin && hasReqDefault) {
             stanLoading('hide');
             stanAlert({
                 type: 'danger',
                 content: 'please login first, going to home page now...',
                 textAlign: 'center',
                 shownExpires: 0.75,
+                autoClose: false
             });
 
             setTimeout(() => {
                 window.location.href = '/';
-            }, 1500);
+            }, 2000);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isLogin]);
 
     if (getRoute() !== current) {
@@ -70,6 +73,7 @@ let PageUser;
 
 UI_PageUser.propTypes = {
     isLogin: PropTypes.bool,
+    hasReqDefault: PropTypes.bool,
     changeRoute: PropTypes.func.isRequired,
     current: PropTypes.string,
 };

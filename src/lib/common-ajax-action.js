@@ -3,6 +3,11 @@ import config from 'config';
 const GET = 'GET';
 const POST = 'POST';
 const ajaxOptsMap = {
+    message: {
+        page: {
+            url: '/api/message/page', type: GET
+        }
+    },
     user: {
         default: {
             url: '/api/user/default', type: GET

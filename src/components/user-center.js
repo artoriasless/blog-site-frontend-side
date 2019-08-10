@@ -1,35 +1,65 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import {
+    ajaxAction,
     stanAlert,
     ModulePager,
     ModuleClockShow,
 } from 'lib';
 import config from 'config';
 
-const UserComment = function(props) {
-    const { message, getMessage } = props;
-    const msg = message || {};
-    const page = msg.page || 1;
-    const msgCount = msg.count || 0;
-    const msgArr = msg.rows || [];
+const UserComment = function() {
+    const [msg, setMsg] = useState({
+        count: 0,
+        page: 1,
+        rows: []
+    });
+    const {
+        count,
+        page,
+        rows,
+    } = msg;
+    const pagerData = {
+        current: page,
+        dataCount: count,
+    };
+    const getMessage = jsonData => {
+        const successFunc = function(result) {
+            if (result.success) {
+                setMsg(result.data);
+            } else {
+                stanAlert({
+                    title: 'Warning!',
+                    content: result.message,
+                });
+            }
+        };
+        const failFunc = function(err) {
+            stanAlert({
+                title: 'Warning!',
+                content: err.toString(),
+            });
+            console.info(err); // eslint-disable-line
+        };
+
+        ajaxAction('message.page', jsonData, successFunc, failFunc);
+    };
 
     useEffect(() => {
         getMessage({
-            page: 1
+            page: 1,
         });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
         <div className="col-xs-12 col-md-8 user-comment">
             <div className="comment-title">My Messages</div>
-            <div className={ msgCount === 0 ? 'comment-content empty' : 'comment-content' }>
+            <div className={ count === 0 ? 'comment-content empty' : 'comment-content' }>
                 {
-                    msgCount === 0 ? 'message list is empty!' : (
-                        msgArr.map((msgItem, idx) => {
+                    count === 0 ? 'message list is empty!' : (
+                        rows.map((msgItem, idx) => {
                             let msgNo = (page - 1) * 10 + idx + 1;
                             let msgItemClassArr = [
                                 'message-item',
@@ -64,8 +94,8 @@ const UserComment = function(props) {
                 }
             </div>
             {
-                msgCount !== 0 ?
-                    <ModulePager jumpHandler={ getMessage } data={ message }/> :
+                count !== 0 ?
+                    <ModulePager jumpHandler={ getMessage } data={ pagerData }/> :
                     null
             }
         </div>
@@ -188,12 +218,36 @@ const InfoContainer = function(props) {
         </div>
     );
 };
+const UserOverview = function(props) {
+    const {
+        userInfo,
+        sendActivateMail,
+        updateUserInfoForm,
+        resetPwd,
+    } = props;
+
+    return (
+        <div className="col-xs-12 col-md-4 user-overview">
+            <div className="overview-container">
+                <AvatarContainer userInfo={ userInfo }/>
+                <InfoContainer userInfo={ userInfo } sendActivateMail={ sendActivateMail }/>
+            </div>
+            <OperateContainer
+                userInfo={ userInfo }
+                updateUserInfoForm={ updateUserInfoForm }
+                resetPwd={ resetPwd }
+            />
+        </div>
+    );
+};
 const AvatarContainer = function(props) {
     const { userInfo } = props;
-    // const defaultAvatarLink = `${config.ossPublic.user}/default.jpg?${Date.parse(new Date())}`;
     const avatarLink = `${config.ossPublic.user}/${userInfo.uuid}.jpg?${Date.parse(new Date())}`;
+    const $userAvatar = useRef(null);
     const errHandler = (evt) => { // eslint-disable-line
+        const defaultAvatarLink = `${config.ossPublic.user}/default.jpg?${Date.parse(new Date())}`;
 
+        $userAvatar.current.setAttribute('src', defaultAvatarLink);
     };
     const changeHandler = (evt) => { // eslint-disable-line
 
@@ -210,6 +264,7 @@ const AvatarContainer = function(props) {
                     className="avatar-content"
                     src={ avatarLink }
                     onError={ event => errHandler(event) }
+                    ref={ $userAvatar }
                 />
                 <label htmlFor="avatarInput" className="edit-icon-container">
                     <i className="fa fa-edit"></i>
@@ -238,36 +293,12 @@ const AvatarContainer = function(props) {
         </div>
     );
 };
-const UserOverview = function(props) {
-    const {
-        userInfo,
-        sendActivateMail,
-        updateUserInfoForm,
-        resetPwd,
-    } = props;
-
-    return (
-        <div className="col-xs-12 col-md-4 user-overview">
-            <div className="overview-container">
-                <AvatarContainer userInfo={ userInfo }/>
-                <InfoContainer userInfo={ userInfo } sendActivateMail={ sendActivateMail }/>
-            </div>
-            <OperateContainer
-                userInfo={ userInfo }
-                updateUserInfoForm={ updateUserInfoForm }
-                resetPwd={ resetPwd }
-            />
-        </div>
-    );
-};
 const UI_UserCenter = function(props) {
     const {
         cache,
         userInfo,
-        message,
         updateUserInfoForm,
         sendActivateMail,
-        getMessage,
         resetPwd,
     } = props;
     const isLogin = Boolean(cache.isLogin);
@@ -300,7 +331,7 @@ const UI_UserCenter = function(props) {
             />
             <UserInfo userInfo={ userInfo }/>
             <UserAd/>
-            <UserComment message={ message } getMessage={ getMessage }/>
+            <UserComment/>
         </div>
     );
 };
@@ -309,14 +340,9 @@ const mapDispatch2Props = () => ({
     updateUserInfoForm: () => null,
     sendActivateMail: () => null,
     resetPwd: () => null,
-    getMessage: () => null,
 });
 let UserCenter;
 
-UserComment.propTypes = {
-    message: PropTypes.object,
-    getMessage: PropTypes.func.isRequired,
-};
 UserInfo.propTypes = {
     userInfo: PropTypes.object,
 };
@@ -342,9 +368,7 @@ UI_UserCenter.propTypes = {
     updateUserInfoForm: PropTypes.func.isRequired,
     sendActivateMail: PropTypes.func.isRequired,
     resetPwd: PropTypes.func.isRequired,
-    getMessage: PropTypes.func.isRequired,
     userInfo: PropTypes.object,
-    message: PropTypes.object,
     cache: PropTypes.object,
 };
 
