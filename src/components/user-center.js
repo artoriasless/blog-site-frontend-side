@@ -140,84 +140,6 @@ const UserInfo = function(props) {
         </div>
     );
 };
-const OperateContainer = function(props) {
-    const editInfo = (evt) => { // eslint-disable-line
-        const { userInfo } = props;
-        const $editInfoModal = $('#editInfoModal');
-
-        $editInfoModal.modal();
-        $editInfoModal.find('[name=userName]').val(userInfo.userName);
-        $editInfoModal.find(`[name=gender][value=${userInfo.gender}]`).prop('checked', true);
-
-        props.updateUserInfoForm({
-            userName: userInfo.userName,
-            gender: userInfo.gender,
-        });
-    };
-    const editPwd = (evt) => { // eslint-disable-line
-        document.querySelector('#editPwdForm').reset();
-        $('#editPwdModal').modal();
-    };
-    const resetPwd = (evt) => { // eslint-disable-line
-        props.resetPwd();
-    };
-
-    return (
-        <div className="operate-container">
-            <a className="operate-link" onClick={ event => editInfo(event) }>
-                Edit Info
-            </a>
-            &nbsp;|&nbsp;
-            <a className="operate-link" onClick={ event => editPwd(event) }>
-                Edit Pwd
-            </a>
-            &nbsp;|&nbsp;
-            <a className="operate-link" onClick={ event => resetPwd(event) }>
-                Reset Pwd
-            </a>
-        </div>
-    );
-};
-const InfoContainer = function(props) {
-    const genderMap = [
-        'mars',
-        'venus',
-        'transgender',
-    ];
-    const { userInfo, sendActivateMail } = props;
-    const genderClass = `user-gender fa fa-${genderMap[userInfo.gender || 0]}`;
-    const activateAccount = evt => { // eslint-disable-line
-        sendActivateMail();
-    };
-
-    return (
-        <div className="info-container">
-            <div className="user-name">
-                <i className={ genderClass }></i>
-                { userInfo.userName }
-            </div>
-            {
-                userInfo.isEnabled ? (
-                    <div className="account-activated">
-                        <span className="activated-tips activated">
-                            Activated
-                        </span>
-                    </div>
-                ) : (
-                    <div className="account-activated">
-                        <a
-                            className="send-activate-mail-link"
-                            href="javascript:;"
-                            onClick={ event => activateAccount(event) }
-                        >
-                            click to activate account
-                        </a>
-                    </div>
-                )
-            }
-        </div>
-    );
-};
 const UserOverview = function(props) {
     const {
         userInfo,
@@ -225,28 +147,39 @@ const UserOverview = function(props) {
         updateUserInfoForm,
         resetPwd,
     } = props;
-
-    return (
-        <div className="col-xs-12 col-md-4 user-overview">
-            <div className="overview-container">
-                <AvatarContainer userInfo={ userInfo }/>
-                <InfoContainer userInfo={ userInfo } sendActivateMail={ sendActivateMail }/>
-            </div>
-            <OperateContainer
-                userInfo={ userInfo }
-                updateUserInfoForm={ updateUserInfoForm }
-                resetPwd={ resetPwd }
-            />
-        </div>
-    );
-};
-const AvatarContainer = function(props) {
-    const { userInfo } = props;
+    const genderMap = [
+        'mars',
+        'venus',
+        'transgender',
+    ];
+    const genderClass = `user-gender fa fa-${genderMap[userInfo.gender || 0]}`;
+    const defaultAvatarLink = `${config.ossPublic.user}/default.jpg?${Date.parse(new Date())}`;
     const avatarLink = `${config.ossPublic.user}/${userInfo.uuid}.jpg?${Date.parse(new Date())}`;
     const $userAvatar = useRef(null);
-    const errHandler = (evt) => { // eslint-disable-line
-        const defaultAvatarLink = `${config.ossPublic.user}/default.jpg?${Date.parse(new Date())}`;
+    const editInfoHandler = (evt) => { // eslint-disable-line
+        const { userInfo } = props;
+        const $editInfoModal = $('#editInfoModal');
 
+        $editInfoModal.modal();
+        $editInfoModal.find('[name=userName]').val(userInfo.userName);
+        $editInfoModal.find(`[name=gender][value=${userInfo.gender}]`).prop('checked', true);
+
+        updateUserInfoForm({
+            userName: userInfo.userName,
+            gender: userInfo.gender,
+        });
+    };
+    const editPwdHandler = (evt) => { // eslint-disable-line
+        document.querySelector('#editPwdForm').reset();
+        $('#editPwdModal').modal();
+    };
+    const resetPwdHandler = (evt) => { // eslint-disable-line
+        resetPwd();
+    };
+    const activateAccount = evt => { // eslint-disable-line
+        sendActivateMail();
+    };
+    const errHandler = (evt) => { // eslint-disable-line
         $userAvatar.current.setAttribute('src', defaultAvatarLink);
     };
     const changeHandler = (evt) => { // eslint-disable-line
@@ -254,42 +187,84 @@ const AvatarContainer = function(props) {
     };
 
     return (
-        <div className="avatar-container">
-            <form
-                id="avatarForm"
-                method="POST"
-                encType="multipart/form-data"
-            >
-                <img
-                    className="avatar-content"
-                    src={ avatarLink }
-                    onError={ event => errHandler(event) }
-                    ref={ $userAvatar }
-                />
-                <label htmlFor="avatarInput" className="edit-icon-container">
-                    <i className="fa fa-edit"></i>
-                </label>
-                <input
-                    className="hidden"
-                    name="type"
-                    defaultValue="USER_AVATAR"
-                    type="text"
-                />
-                <input
-                    className="hidden"
-                    name="fileType"
-                    defaultValue="image"
-                    type="text"
-                />
-                <input
-                    id="avatarInput"
-                    type="file"
-                    accept="image/jpg,image/jpeg,image/gif,image/png,image/bmp"
-                    className="hidden"
-                    onChange={ event => changeHandler(event) }
-                    name="file"
-                />
-            </form>
+        <div className="col-xs-12 col-md-4 user-overview">
+            <div className="overview-container">
+                <div className="avatar-container">
+                    <form
+                        id="avatarForm"
+                        method="POST"
+                        encType="multipart/form-data"
+                    >
+                        <img
+                            className="avatar-content"
+                            src={ (userInfo.id && userInfo.uuid && userInfo.email) ? avatarLink : defaultAvatarLink }
+                            onError={ event => errHandler(event) }
+                            ref={ $userAvatar }
+                        />
+                        <label htmlFor="avatarInput" className="edit-icon-container">
+                            <i className="fa fa-edit"></i>
+                        </label>
+                        <input
+                            className="hidden"
+                            name="type"
+                            defaultValue="USER_AVATAR"
+                            type="text"
+                        />
+                        <input
+                            className="hidden"
+                            name="fileType"
+                            defaultValue="image"
+                            type="text"
+                        />
+                        <input
+                            id="avatarInput"
+                            type="file"
+                            accept="image/jpg,image/jpeg,image/gif,image/png,image/bmp"
+                            className="hidden"
+                            onChange={ event => changeHandler(event) }
+                            name="file"
+                        />
+                    </form>
+                </div>
+                <div className="info-container">
+                    <div className="user-name">
+                        <i className={ genderClass }></i>
+                        { userInfo.userName }
+                    </div>
+                    {
+                        userInfo.isEnabled ? (
+                            <div className="account-activated">
+                                <span className="activated-tips activated">
+                                    Activated
+                                </span>
+                            </div>
+                        ) : (
+                            <div className="account-activated">
+                                <a
+                                    className="send-activate-mail-link"
+                                    href="javascript:;"
+                                    onClick={ event => activateAccount(event) }
+                                >
+                                    click to activate account
+                                </a>
+                            </div>
+                        )
+                    }
+                </div>
+            </div>
+            <div className="operate-container">
+                <a className="operate-link" onClick={ event => editInfoHandler(event) }>
+                    Edit Info
+                </a>
+                &nbsp;|&nbsp;
+                <a className="operate-link" onClick={ event => editPwdHandler(event) }>
+                    Edit Pwd
+                </a>
+                &nbsp;|&nbsp;
+                <a className="operate-link" onClick={ event => resetPwdHandler(event) }>
+                    Reset Pwd
+                </a>
+            </div>
         </div>
     );
 };
@@ -344,18 +319,6 @@ const mapDispatch2Props = () => ({
 let UserCenter;
 
 UserInfo.propTypes = {
-    userInfo: PropTypes.object,
-};
-OperateContainer.propTypes = {
-    userInfo: PropTypes.object,
-    updateUserInfoForm: PropTypes.func.isRequired,
-    resetPwd: PropTypes.func.isRequired,
-};
-InfoContainer.propTypes = {
-    userInfo: PropTypes.object,
-    sendActivateMail: PropTypes.func.isRequired,
-};
-AvatarContainer.propTypes = {
     userInfo: PropTypes.object,
 };
 UserOverview.propTypes = {
