@@ -51,7 +51,7 @@ const Body = function(props) {
                 </div>
                 <div className="form-group">
                     <label htmlFor="editPwd_new">
-                        original password
+                        new password
                     </label>
                     <input
                         id="editPwd_new"
@@ -63,7 +63,7 @@ const Body = function(props) {
                 </div>
                 <div className="form-group">
                     <label htmlFor="editPwd_confirm">
-                        original password
+                        confirm new password
                     </label>
                     <input
                         id="editPwd_confirm"
