@@ -3,6 +3,11 @@ import config from 'config';
 const GET = 'GET';
 const POST = 'POST';
 const ajaxOptsMap = {
+    util: {
+        uploadFile: {
+            url: '/util/upload-file', type: POST
+        }
+    },
     message: {
         page: {
             url: '/api/message/page', type: GET
@@ -26,12 +31,13 @@ const ajaxOptsMap = {
 const getAjaxOpts = (ajaxName, ajaxData) => {
     const paramReg = /\/(:([^/]+))(\/|$)/;
     const keyArr = ajaxName.split('.');
+    const domain = process.env.NODE_ENV === 'development' ? '//127.0.0.1:3001' : config.serverSideDomain;
     let opts = JSON.parse(JSON.stringify(ajaxOptsMap));
 
     keyArr.forEach(key => {
         opts = opts[key];
     });
-    opts.url = `${config.serverSideDomain}${opts.url}`;
+    opts.url = `${domain}${opts.url}`;
     opts.data = ajaxData;
 
     // 检查请求地址中是否有 param 参数需要替换
@@ -52,7 +58,7 @@ const getAjaxOpts = (ajaxName, ajaxData) => {
 
     return opts;
 };
-const ajaxAction = (ajaxName, ajaxData, successFunc, failFunc) => {
+const ajaxAction = (ajaxName, ajaxData, successFunc, failFunc, opts) => {
     /**
      * 将 ajax 请求封装了一下，便于调用，减少重复的代码
      *
@@ -60,14 +66,24 @@ const ajaxAction = (ajaxName, ajaxData, successFunc, failFunc) => {
      * @param {object} ajaxData 对应请求传给后端的数据
      * @param {function} successFunc 对应 ajax 请求结束后的回调方法
      * @param {function} failFunc 对应 ajax 请求失败后的回调方法
+     * @param {object} opts 额外需要设置的 options 配置
      */
     const ajaxOpts = getAjaxOpts(ajaxName, ajaxData);
+
+    opts = opts || {};
+    for (let key in opts) {
+        if (typeof opts[key] === 'object') {
+            ajaxOpts[key] = Object.assign(ajaxOpts[key] || {}, opts[key]);
+        } else {
+            ajaxOpts[key] = opts[key];
+        }
+    }
 
     $.ajax(Object.assign(ajaxOpts, {
         success: function(data) {
             if (successFunc) successFunc(data);
         },
-        error  : function(err) {
+        error: function(err) {
             if (failFunc) failFunc(err);
         },
     }));
