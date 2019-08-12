@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { memo, useEffect } from 'react';
 
-const ModuleClockShow = function() {
+const ModuleClockShow = memo(function Mod() {
     const jQuery = window.jQuery || window.$;
     const $ = jQuery;
     const easing = () => {
@@ -1631,6 +1631,6 @@ const ModuleClockShow = function() {
             </div>
         </div>
     );
-};
+}, (prevProps, nextProps) => Boolean('CONSTANT_PROPS')); // eslint-disable-line
 
 export default ModuleClockShow;

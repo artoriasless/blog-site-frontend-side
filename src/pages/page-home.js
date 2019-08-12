@@ -1,20 +1,13 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
 
-import { changeRoute } from 'actions';
 import {
     Navbar,
     LoginModal
 } from 'components';
-import {
-    getRoute,
-    stanLoading
-} from 'lib';
+import { stanLoading } from 'lib';
 
-const UI_PageHome = function(props) {
-    const { current, changeRoute } = props;
-
+const UI_PageHome = function() {
     useEffect(() => {
         stanLoading();
 
@@ -24,12 +17,8 @@ const UI_PageHome = function(props) {
         }, 500);
     }, []);
 
-    if (getRoute() !== current) {
-        changeRoute();
-    }
-
     return (
-        <div className="page-home" key={ props.current }>
+        <div className="page-home">
             <Navbar/>
             <div className="page-section-body">
                 <div className="main">
@@ -68,15 +57,8 @@ const UI_PageHome = function(props) {
     );
 };
 const mapState2Props = (state, props) => state.appReducer; // eslint-disable-line
-const mapDispatch2Props = () => ({
-    changeRoute,
-});
+const mapDispatch2Props = () => ({});
 let PageHome;
-
-UI_PageHome.propTypes = {
-    changeRoute: PropTypes.func.isRequired,
-    current: PropTypes.string,
-};
 
 PageHome = connect(
     mapState2Props,

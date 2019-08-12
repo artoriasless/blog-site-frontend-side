@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { changeRoute } from 'actions';
 import {
     Navbar,
     LoginModal,
@@ -11,18 +10,12 @@ import {
     EditPwdModal,
 } from 'components';
 import {
-    getRoute,
     stanLoading,
     stanAlert,
 } from 'lib';
 
 const UI_PageUser = function(props){
-    const {
-        current,
-        changeRoute,
-        isLogin,
-        hasReqDefault,
-    } = props;
+    const { isLogin, hasReqDefault } = props;
 
     useEffect(() => {
         stanLoading();
@@ -31,26 +24,22 @@ const UI_PageUser = function(props){
             stanLoading('hide');
             $('#root').removeClass('hidden').addClass('fade-in-animate');
         }, 500);
-
-        if (!isLogin && hasReqDefault) {
-            stanLoading('hide');
-            stanAlert({
-                type: 'danger',
-                content: 'please login first, going to home page now...',
-                textAlign: 'center',
-                shownExpires: 0.75,
-                autoClose: false
-            });
-
-            setTimeout(() => {
-                window.location.href = '/';
-            }, 2000);
-        }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isLogin]);
+    }, []);
 
-    if (getRoute() !== current) {
-        changeRoute();
+    if (!isLogin && hasReqDefault) {
+        stanLoading('hide');
+        stanAlert({
+            type: 'danger',
+            content: 'please login first, going to home page now...',
+            textAlign: 'center',
+            shownExpires: 0.75,
+            autoClose: false
+        });
+
+        setTimeout(() => {
+            window.location.href = '/';
+        }, 1500);
     }
 
     return (
@@ -66,16 +55,12 @@ const UI_PageUser = function(props){
     );
 };
 const mapState2Props = (state, props) => state.appReducer; // eslint-disable-line
-const mapDispatch2Props = () => ({
-    changeRoute,
-});
+const mapDispatch2Props = () => ({});
 let PageUser;
 
 UI_PageUser.propTypes = {
     isLogin: PropTypes.bool,
     hasReqDefault: PropTypes.bool,
-    changeRoute: PropTypes.func.isRequired,
-    current: PropTypes.string,
 };
 
 PageUser= connect(

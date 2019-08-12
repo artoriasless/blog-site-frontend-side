@@ -1,38 +1,12 @@
 import config from 'config';
 
-const GET = 'GET';
-const POST = 'POST';
-const ajaxOptsMap = {
-    util: {
-        uploadFile: {
-            url: '/util/upload-file', type: POST
-        }
-    },
-    message: {
-        page: {
-            url: '/api/message/page', type: GET
-        }
-    },
-    user: {
-        default: {
-            url: '/api/user/default', type: GET
-        },
-        login: {
-            url: '/api/user/login', type: POST
-        },
-        logout: {
-            url: '/api/user/logout', type: POST
-        },
-        register: {
-            url: '/api/user/register', type: POST
-        }
-    }
-};
+import { ajaxRequestMap } from './constant';
+
 const getAjaxOpts = (ajaxName, ajaxData) => {
     const paramReg = /\/(:([^/]+))(\/|$)/;
     const keyArr = ajaxName.split('.');
     const domain = process.env.NODE_ENV === 'development' ? '//127.0.0.1:3001' : config.serverSideDomain;
-    let opts = JSON.parse(JSON.stringify(ajaxOptsMap));
+    let opts = JSON.parse(JSON.stringify(ajaxRequestMap));
 
     keyArr.forEach(key => {
         opts = opts[key];

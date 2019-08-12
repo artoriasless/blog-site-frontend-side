@@ -1,20 +1,23 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { memo, useState, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
+import { updateTimestamp } from 'actions';
 import {
     ajaxAction,
     stanAlert,
+    stanLoading,
     ModulePager,
     ModuleClockShow,
 } from 'lib';
 import config from 'config';
 
-const UserComment = function() {
+const UserComment = memo(function Mod() {
+    const [mounted, setMounted] = useState(false);
     const [msg, setMsg] = useState({
         count: 0,
         page: 1,
-        rows: []
+        rows: [],
     });
     const {
         count,
@@ -48,14 +51,20 @@ const UserComment = function() {
     };
 
     useEffect(() => {
-        getMessage({
-            page: 1,
-        });
-    }, []);
+        if (!mounted) {
+            setMounted(true);
+            getMessage({
+                page: 1
+            });
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [mounted]);
 
     return (
         <div className="col-xs-12 col-md-8 user-comment">
-            <div className="comment-title">My Messages</div>
+            <div className="comment-title">
+                My Messages
+            </div>
             <div className={ count === 0 ? 'comment-content empty' : 'comment-content' }>
                 {
                     count === 0 ? 'message list is empty!' : (
@@ -100,14 +109,14 @@ const UserComment = function() {
             }
         </div>
     );
-};
-const UserAd = function() {
+}, (prevProps, nextProps) => Boolean('CONSTANT_PROPS')); // eslint-disable-line
+const UserAd = memo(function Mod() {
     return (
         <div id="advertise_user" className="col-xs-12 col-md-4 user-ad">
             <ModuleClockShow/>
         </div>
     );
-};
+}, (prevProps, nextProps) => Boolean('CONSTANT_PROPS')); // eslint-disable-line
 const UserInfo = function(props) {
     const { userInfo } = props;
 
@@ -142,7 +151,9 @@ const UserInfo = function(props) {
 };
 const UserOverview = function(props) {
     const {
+        timestamp,
         userInfo,
+        updateTimestamp,
         sendActivateMail,
         updateUserInfoForm,
         resetPwd,
@@ -153,8 +164,8 @@ const UserOverview = function(props) {
         'transgender',
     ];
     const genderClass = `user-gender fa fa-${genderMap[userInfo.gender || 0]}`;
-    const defaultAvatarLink = `${config.ossPublic.user}/default.jpg?${Date.parse(new Date())}`;
-    const avatarLink = `${config.ossPublic.user}/${userInfo.uuid}.jpg?${Date.parse(new Date())}`;
+    const defaultAvatarLink = `${config.ossPublic.user}/default.jpg`;
+    const avatarLink = `${config.ossPublic.user}/${userInfo.uuid}.jpg?${timestamp}`;
     const $userAvatar = useRef(null);
     const editInfoHandler = (evt) => { // eslint-disable-line
         const { userInfo } = props;
@@ -179,11 +190,44 @@ const UserOverview = function(props) {
     const activateAccount = evt => { // eslint-disable-line
         sendActivateMail();
     };
-    const errHandler = (evt) => { // eslint-disable-line
+    const avatarErrHandler = (evt) => { // eslint-disable-line
         $userAvatar.current.setAttribute('src', defaultAvatarLink);
     };
-    const changeHandler = (evt) => { // eslint-disable-line
+    const avatarChangeHandler = (evt) => { // eslint-disable-line
+        const jsonData = new FormData(document.querySelector('#avatarForm'));
+        const successFunc = function(result) {
+            stanLoading('hide');
+            if (result.success) {
+                updateTimestamp();
+                stanAlert({
+                    type: 'success',
+                    content: result.message,
+                    textAlign: 'center',
+                    shownExpires: 0.75,
+                });
+            } else {
+                stanAlert({
+                    title: 'Warning!',
+                    content: result.message,
+                });
+            }
+        };
+        const failFunc = function(err) {
+            stanLoading('hide');
+            stanAlert({
+                title: 'Warning!',
+                content: err.toString(),
+            });
+            console.info(err); // eslint-disable-line
+        };
+        const options = {
+            cache: false,
+            processData: false,
+            contentType: false,
+        };
 
+        stanLoading();
+        ajaxAction('util.uploadFile', jsonData, successFunc, failFunc, options);
     };
 
     return (
@@ -198,7 +242,7 @@ const UserOverview = function(props) {
                         <img
                             className="avatar-content"
                             src={ (userInfo.id && userInfo.uuid && userInfo.email) ? avatarLink : defaultAvatarLink }
-                            onError={ event => errHandler(event) }
+                            onError={ event => avatarErrHandler(event) }
                             ref={ $userAvatar }
                         />
                         <label htmlFor="avatarInput" className="edit-icon-container">
@@ -221,7 +265,7 @@ const UserOverview = function(props) {
                             type="file"
                             accept="image/jpg,image/jpeg,image/gif,image/png,image/bmp"
                             className="hidden"
-                            onChange={ event => changeHandler(event) }
+                            onChange={ event => avatarChangeHandler(event) }
                             name="file"
                         />
                     </form>
@@ -270,35 +314,19 @@ const UserOverview = function(props) {
 };
 const UI_UserCenter = function(props) {
     const {
-        cache,
+        timestamp,
         userInfo,
+        updateTimestamp,
         updateUserInfoForm,
         sendActivateMail,
         resetPwd,
     } = props;
-    const isLogin = Boolean(cache.isLogin);
-
-    useEffect(() => {
-        if (isLogin) {
-            setTimeout(() => {
-                stanAlert({
-                    type: 'success',
-                    content: 'please login,ready to home page...',
-                    textAlign: 'center',
-                    shownExpires: 1,
-                });
-
-                setTimeout(() => {
-                    location.href='/';
-                }, 1000);
-            }, 1000);
-        }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
 
     return (
         <div className="user-center row no-gutters">
             <UserOverview
+                timestamp={ timestamp }
+                updateTimestamp={ updateTimestamp }
                 userInfo={ userInfo }
                 updateUserInfoForm={ updateUserInfoForm }
                 sendActivateMail={ sendActivateMail }
@@ -312,27 +340,34 @@ const UI_UserCenter = function(props) {
 };
 const mapState2Props = (state, props) => state.appReducer; // eslint-disable-line
 const mapDispatch2Props = () => ({
+    updateTimestamp,
     updateUserInfoForm: () => null,
     sendActivateMail: () => null,
     resetPwd: () => null,
 });
 let UserCenter;
 
+UserComment.propTypes = {
+    userInfo: PropTypes.object,
+};
 UserInfo.propTypes = {
     userInfo: PropTypes.object,
 };
 UserOverview.propTypes = {
+    timestamp: PropTypes.number,
+    updateTimestamp: PropTypes.func.isRequired,
     userInfo: PropTypes.object,
     sendActivateMail: PropTypes.func.isRequired,
     updateUserInfoForm: PropTypes.func.isRequired,
     resetPwd: PropTypes.func.isRequired,
 };
 UI_UserCenter.propTypes = {
+    timestamp: PropTypes.number,
+    updateTimestamp: PropTypes.func.isRequired,
     updateUserInfoForm: PropTypes.func.isRequired,
     sendActivateMail: PropTypes.func.isRequired,
     resetPwd: PropTypes.func.isRequired,
     userInfo: PropTypes.object,
-    cache: PropTypes.object,
 };
 
 UserCenter = connect(

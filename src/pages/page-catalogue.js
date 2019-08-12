@@ -2,22 +2,19 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { changeRoute } from 'actions';
 import {
     Navbar,
     LoginModal,
     PaperFilter,
     Catalogue
 } from 'components';
-import {
-    getRoute,
-    stanLoading
-} from 'lib';
+import { stanLoading } from 'lib';
 
 const UI_PageCatalogue = function(props) {
+    const { params } = props;
     const filterReg = /^((t|T)(i|I)(m|M)(e|E)(l|L)(i|I)(n|N)(e|E)|(t|T)(a|A)(g|G))$/g;
-    const filterParam = props.params.filterParam || '';
-    let filterType = props.params.filterType;
+    const filterParam = params.filterParam || '';
+    let filterType = params.filterType;
 
     filterType = filterReg.test(filterType) ? filterType.toUpperCase() : 'ALL';
 
@@ -30,12 +27,8 @@ const UI_PageCatalogue = function(props) {
         }, 500);
     }, []);
 
-    if (getRoute() !== props.current) {
-        props.changeRoute();
-    }
-
     return (
-        <div className="page-catalogue" key={ props.current }>
+        <div className="page-catalogue">
             <Navbar/>
             <div className="page-section-body row">
                 <PaperFilter/>
@@ -46,15 +39,11 @@ const UI_PageCatalogue = function(props) {
     );
 };
 const mapState2Props = (state, props) => state.appReducer;  //  eslint-disable-line
-const mapDispatch2Props = () => ({
-    changeRoute,
-});
+const mapDispatch2Props = () => ({});
 let PageCatalogue;
 
 UI_PageCatalogue.propTypes = {
     params: PropTypes.object.isRequired,
-    changeRoute: PropTypes.func.isRequired,
-    current: PropTypes.string,
 };
 
 PageCatalogue = connect(

@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { changeRoute } from 'actions';
 import {
     Navbar,
     LoginModal,
@@ -10,13 +9,11 @@ import {
     Paper,
     ReplyModal
 } from 'components';
-import {
-    getRoute,
-    stanLoading
-} from 'lib';
+import { stanLoading } from 'lib';
 
 const UI_PagePaper = function(props) {
-    const paperId = props.params.paperId;
+    const { current, params } = props;
+    const paperId = params.paperId;
 
     useEffect(() => {
         stanLoading();
@@ -27,12 +24,8 @@ const UI_PagePaper = function(props) {
         }, 500);
     }, []);
 
-    if (getRoute() !== props.current) {
-        props.changeRoute();
-    }
-
     return (
-        <div className="page-paper" key={ props.current }>
+        <div className="page-paper" key={ current }>
             <Navbar/>
             <div className="page-section-body row">
                 <PaperFilter/>
@@ -44,14 +37,11 @@ const UI_PagePaper = function(props) {
     );
 };
 const mapState2Props = (state, props) => state.appReducer; // eslint-disable-line
-const mapDispatch2Props = () => ({
-    changeRoute,
-});
+const mapDispatch2Props = () => ({});
 let PagePaper;
 
 UI_PagePaper.propTypes = {
     params: PropTypes.object.isRequired,
-    changeRoute: PropTypes.func.isRequired,
     current: PropTypes.string,
 };
 
