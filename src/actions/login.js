@@ -1,14 +1,13 @@
 import store from 'reducers';
 
 import {
+    getRoute,
     ajaxAction,
     stanAlert
 } from 'lib';
 
 const LOGIN = userInfo => {
-    const url = document.URL;
-    const reg = /^[^/]+\/\/[^/]+/;
-    const current = url.replace(reg, '');
+    const current = getRoute();
 
     return ({
         type: 'LOGIN',

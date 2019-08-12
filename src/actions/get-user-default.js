@@ -1,13 +1,13 @@
 import store from 'reducers';
 
 import {
-    ajaxAction
+    getRoute,
+    ajaxAction,
+    stanAlert,
 } from 'lib';
 
 const GET_USER_DEFAULT = userInfo => {
-    const url = document.URL;
-    const reg = /^[^/]+\/\/[^/]+/;
-    const current = url.replace(reg, '');
+    const current = getRoute();
 
     return ({
         type: 'GET_USER_DEFAULT',
@@ -22,6 +22,11 @@ const getUserDefault = () => {
         store.dispatch(GET_USER_DEFAULT(result.data));
     };
     const failFunc = function(err) {
+        stanAlert({
+            title: 'Warning!',
+            content: 'connect to server failed, please try again later...',
+            autoClose: false
+        });
         console.info(err);  //  eslint-disable-line
     };
 

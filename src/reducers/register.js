@@ -1,4 +1,4 @@
-const register = (originalState, action) => {   //  eslint-disable-line
+const register = (originalState, action) => {
     const newState = JSON.parse(JSON.stringify(originalState));
 
     newState.current = action.payload.current;

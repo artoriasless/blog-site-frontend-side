@@ -1,8 +1,3 @@
-const getRoute = () => {
-    const domain = window.location.host;
-    const currentRoute = window.location.href.split(domain)[1];
-
-    return currentRoute;
-};
+const getRoute = () => document.URL.replace(/^[^/]+\/\/[^/]+/, '');
 
 export default getRoute;

@@ -1,9 +1,9 @@
 import store from 'reducers';
 
+import { getRoute } from 'lib';
+
 const CHANGE_ROUTE = () => {
-    const url = document.URL;
-    const reg = /^[^/]+\/\/[^/]+/;
-    const current = url.replace(reg, '');
+    const current = getRoute();
 
     return ({
         type: 'CHANGE_ROUTE',
