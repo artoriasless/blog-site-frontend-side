@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { logout } from 'actions';
-
 import config from 'config';
 
 const NavbarLeft = function() {
@@ -14,9 +13,13 @@ const NavbarLeft = function() {
     );
 };
 const NavbarRight = function(props) {
-    const userInfo = props.userInfo;
+    const {
+        userInfo,
+        timestamp,
+        logout
+    } = props;
     const userName = userInfo.userName;
-    const avatarLink = `${config.ossPublic.user}/${userInfo.uuid}.jpg?${Date.parse(new Date())}`; //  eslint-disable-line
+    const avatarLink = `${config.ossPublic.user}/${userInfo.uuid}.jpg?${timestamp}`;
     const userNameClass = !userInfo.isEnabled ? 'user-name inactivated' : 'user-name';
     const $userAvatar = useRef(null);
     const showLoginModal = () => {
@@ -26,7 +29,7 @@ const NavbarRight = function(props) {
         document.querySelector('#loginForm').reset();
     };
     const errHandler = (evt) => { // eslint-disable-line
-        const defaultAvatarLink = `${config.ossPublic.user}/default.jpg?${Date.parse(new Date())}`;
+        const defaultAvatarLink = `${config.ossPublic.user}/default.jpg`;
 
         $userAvatar.current.setAttribute('src', defaultAvatarLink);
     };
@@ -111,7 +114,7 @@ const NavbarRight = function(props) {
                                 <a
                                     className="nav-link logout-link"
                                     href="javascript:;"
-                                    onClick = { () => props.logout() }
+                                    onClick = { () => logout() }
                                 >
                                     Logout
                                 </a>
@@ -124,13 +127,21 @@ const NavbarRight = function(props) {
     );
 };
 const UI_Navbar = function(props) {
-    const userInfo = props.userInfo;
+    const {
+        userInfo,
+        timestamp,
+        logout,
+    } = props;
 
     return (
         <div className="page-section-header">
             <div className="page-section-header-container">
                 <NavbarLeft/>
-                <NavbarRight userInfo={ userInfo } logout={ props.logout }/>
+                <NavbarRight
+                    userInfo={ userInfo }
+                    logout={ logout }
+                    timestamp={ timestamp }
+                />
             </div>
         </div>
     );
@@ -143,9 +154,11 @@ let Navbar;
 
 NavbarRight.propTypes = {
     userInfo: PropTypes.object,
-    logout: PropTypes.func.isRequired
+    logout: PropTypes.func.isRequired,
+    timestamp: PropTypes.number,
 };
 UI_Navbar.propTypes = {
+    timestamp: PropTypes.number,
     userInfo: PropTypes.object,
     logout: PropTypes.func.isRequired
 };
