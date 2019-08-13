@@ -10,7 +10,7 @@ import {
 import { stanLoading } from 'lib';
 
 const UI_PageActivate = function(props) {
-    const { current, params } = props;
+    const { params } = props;
 
     useEffect(() => {
         stanLoading();
@@ -22,7 +22,7 @@ const UI_PageActivate = function(props) {
     }, []);
 
     return (
-        <div className="page-activate" key={ current }>
+        <div className="page-activate">
             <Navbar/>
             <div className="page-section-body">
                 <ActivateAccount uuid={ params.uuid }/>

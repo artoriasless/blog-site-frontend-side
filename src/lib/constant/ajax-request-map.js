@@ -24,6 +24,9 @@ const ajaxRequestMap = {
         register: {
             url: '/api/user/register', type: POST
         },
+        activate: {
+            url: '/api/user/activate', type: POST
+        },
         updateInfo: {
             url: '/api/user/update-info', type: POST
         },
