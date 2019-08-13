@@ -2,7 +2,10 @@ import React, { memo, useState, useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { updateTimestamp } from 'actions';
+import {
+    updateTimestamp,
+    logout,
+} from 'actions';
 import {
     ajaxAction,
     stanAlert,
@@ -150,45 +153,79 @@ const UserInfo = function(props) {
     );
 };
 const UserOverview = function(props) {
-    const {
-        timestamp,
-        userInfo,
-        updateTimestamp,
-        sendActivateMail,
-        updateUserInfoForm,
-        resetPwd,
-    } = props;
+    const { timestamp, userInfo } = props;
     const genderMap = [
-        'mars',
         'venus',
+        'mars',
         'transgender',
     ];
-    const genderClass = `user-gender fa fa-${genderMap[userInfo.gender || 0]}`;
+    const genderClass = `user-gender fa fa-${genderMap[userInfo.gender || 1]}`;
     const defaultAvatarLink = `${config.ossPublic.user}/default.jpg`;
     const avatarLink = `${config.ossPublic.user}/${userInfo.uuid}.jpg?${timestamp}`;
     const $userAvatar = useRef(null);
     const editInfoHandler = (evt) => { // eslint-disable-line
-        const { userInfo } = props;
-        const $editInfoModal = $('#editInfoModal');
-
-        $editInfoModal.modal();
-        $editInfoModal.find('[name=userName]').val(userInfo.userName);
-        $editInfoModal.find(`[name=gender][value=${userInfo.gender}]`).prop('checked', true);
-
-        updateUserInfoForm({
-            userName: userInfo.userName,
-            gender: userInfo.gender,
-        });
+        $('#editInfoModal').modal();
     };
     const editPwdHandler = (evt) => { // eslint-disable-line
         document.querySelector('#editPwdForm').reset();
+
         $('#editPwdModal').modal();
     };
     const resetPwdHandler = (evt) => { // eslint-disable-line
-        resetPwd();
+        const successFunc = function(result) {
+            if (result.success) {
+                stanAlert({
+                    type: 'success',
+                    content: result.message,
+                    textAlign: 'center',
+                    shownExpires: 0.75,
+                });
+
+                setTimeout(() => {
+                    logout();
+                }, 1500);
+            } else {
+                stanAlert({
+                    title: 'Warning!',
+                    content: result.message,
+                });
+            }
+        };
+        const failFunc = function(err) {
+            stanAlert({
+                title: 'Warning!',
+                content: err.toString(),
+            });
+            console.info(err);  //  eslint-disable-line
+        };
+
+        ajaxAction('user.resetPwd', {}, successFunc, failFunc);
     };
     const activateAccount = evt => { // eslint-disable-line
-        sendActivateMail();
+        const successFunc = function(result) {
+            if (result.success) {
+                stanAlert({
+                    type: 'success',
+                    content: result.message,
+                    textAlign: 'center',
+                    shownExpires: 0.75,
+                });
+            } else {
+                stanAlert({
+                    title: 'Warning!',
+                    content: result.message,
+                });
+            }
+        };
+        const failFunc = function(err) {
+            stanAlert({
+                title: 'Warning!',
+                content: err.toString(),
+            });
+            console.info(err); // eslint-disable-line
+        };
+
+        ajaxAction('user.sendActivateMail', {}, successFunc, failFunc);
     };
     const avatarErrHandler = (evt) => { // eslint-disable-line
         $userAvatar.current.setAttribute('src', defaultAvatarLink);
@@ -313,25 +350,11 @@ const UserOverview = function(props) {
     );
 };
 const UI_UserCenter = function(props) {
-    const {
-        timestamp,
-        userInfo,
-        updateTimestamp,
-        updateUserInfoForm,
-        sendActivateMail,
-        resetPwd,
-    } = props;
+    const { timestamp, userInfo } = props;
 
     return (
         <div className="user-center row no-gutters">
-            <UserOverview
-                timestamp={ timestamp }
-                updateTimestamp={ updateTimestamp }
-                userInfo={ userInfo }
-                updateUserInfoForm={ updateUserInfoForm }
-                sendActivateMail={ sendActivateMail }
-                resetPwd={ resetPwd }
-            />
+            <UserOverview timestamp={ timestamp } userInfo={ userInfo }/>
             <UserInfo userInfo={ userInfo }/>
             <UserAd/>
             <UserComment/>
@@ -339,12 +362,7 @@ const UI_UserCenter = function(props) {
     );
 };
 const mapState2Props = (state, props) => state.appReducer; // eslint-disable-line
-const mapDispatch2Props = () => ({
-    updateTimestamp,
-    updateUserInfoForm: () => null,
-    sendActivateMail: () => null,
-    resetPwd: () => null,
-});
+const mapDispatch2Props = () => ({});
 let UserCenter;
 
 UserComment.propTypes = {
@@ -355,18 +373,10 @@ UserInfo.propTypes = {
 };
 UserOverview.propTypes = {
     timestamp: PropTypes.number,
-    updateTimestamp: PropTypes.func.isRequired,
     userInfo: PropTypes.object,
-    sendActivateMail: PropTypes.func.isRequired,
-    updateUserInfoForm: PropTypes.func.isRequired,
-    resetPwd: PropTypes.func.isRequired,
 };
 UI_UserCenter.propTypes = {
     timestamp: PropTypes.number,
-    updateTimestamp: PropTypes.func.isRequired,
-    updateUserInfoForm: PropTypes.func.isRequired,
-    sendActivateMail: PropTypes.func.isRequired,
-    resetPwd: PropTypes.func.isRequired,
     userInfo: PropTypes.object,
 };
 

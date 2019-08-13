@@ -13,11 +13,7 @@ const NavbarLeft = function() {
     );
 };
 const NavbarRight = function(props) {
-    const {
-        userInfo,
-        timestamp,
-        logout
-    } = props;
+    const { userInfo, timestamp } = props;
     const userName = userInfo.userName;
     const avatarLink = `${config.ossPublic.user}/${userInfo.uuid}.jpg?${timestamp}`;
     const userNameClass = !userInfo.isEnabled ? 'user-name inactivated' : 'user-name';
@@ -127,40 +123,28 @@ const NavbarRight = function(props) {
     );
 };
 const UI_Navbar = function(props) {
-    const {
-        userInfo,
-        timestamp,
-        logout,
-    } = props;
+    const { userInfo, timestamp } = props;
 
     return (
         <div className="page-section-header">
             <div className="page-section-header-container">
                 <NavbarLeft/>
-                <NavbarRight
-                    userInfo={ userInfo }
-                    logout={ logout }
-                    timestamp={ timestamp }
-                />
+                <NavbarRight userInfo={ userInfo } timestamp={ timestamp }/>
             </div>
         </div>
     );
 };
 const mapState2Props = (state, props) => state.appReducer; // eslint-disable-line
-const mapDispatch2Props = () => ({
-    logout,
-});
+const mapDispatch2Props = () => ({});
 let Navbar;
 
 NavbarRight.propTypes = {
     userInfo: PropTypes.object,
-    logout: PropTypes.func.isRequired,
     timestamp: PropTypes.number,
 };
 UI_Navbar.propTypes = {
     timestamp: PropTypes.number,
     userInfo: PropTypes.object,
-    logout: PropTypes.func.isRequired
 };
 
 Navbar = connect(

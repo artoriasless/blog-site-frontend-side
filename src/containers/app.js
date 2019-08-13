@@ -16,7 +16,6 @@ import {
 const UI_App = function(props) {
     const {
         current,
-        getUserDefault,
         children,
         hasReqDefault
     } = props;
@@ -45,15 +44,12 @@ const UI_App = function(props) {
     }
 };
 const mapState2Props = (state, props) => state.appReducer; // eslint-disable-line
-const mapDispatch2Props = () => ({
-    getUserDefault,
-});
+const mapDispatch2Props = () => ({});
 let App;
 
 UI_App.propTypes = {
     hasReqDefault: PropTypes.bool,
     current: PropTypes.string,
-    getUserDefault: PropTypes.func.isRequired,
     children: PropTypes.element,
 };
 

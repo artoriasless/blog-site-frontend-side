@@ -15,7 +15,11 @@ import {
 } from 'lib';
 
 const UI_PageUser = function(props){
-    const { isLogin, hasReqDefault } = props;
+    const {
+        isLogin,
+        hasReqDefault,
+        userInfo
+    } = props;
 
     useEffect(() => {
         stanLoading();
@@ -43,13 +47,13 @@ const UI_PageUser = function(props){
     }
 
     return (
-        <div className="page-user" key={ props.current }>
+        <div className="page-user">
             <Navbar/>
             <div className="page-section-body">
                 <UserCenter/>
             </div>
             <LoginModal/>
-            <EditInfoModal/>
+            <EditInfoModal userInfo={ userInfo }/>
             <EditPwdModal/>
         </div>
     );
@@ -61,6 +65,7 @@ let PageUser;
 UI_PageUser.propTypes = {
     isLogin: PropTypes.bool,
     hasReqDefault: PropTypes.bool,
+    userInfo: PropTypes.object
 };
 
 PageUser= connect(

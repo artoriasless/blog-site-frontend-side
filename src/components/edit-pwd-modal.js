@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { memo, useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
+import { updatePwd } from 'actions';
 import { stanAlert } from 'lib';
 
-const Header = function() {
+const Header = memo(function Mod() {
     return (
         <div className="modal-header">
             <h5 className="modal-title">
@@ -19,19 +20,14 @@ const Header = function() {
             </a>
         </div>
     );
-};
+}, (prevProps, nextProps) => Boolean('CONSTANT_PROPS')); // eslint-disable-line
 const Body = function(props) {
-    const { updatePwdForm } = props;
-    const formChangeHandler = (evt) => {    //  eslint-disable-line
-        const original = '';
-        const modify = '';
-        const confirm = '';
+    const { pwdForm, setPwdForm } = props;
+    const formChangeHandler = (evt, key) => {
+        const tmpPwdForm = Object.assign({}, pwdForm);
 
-        updatePwdForm({
-            original,
-            modify,
-            confirm,
-        });
+        tmpPwdForm[key] = (evt.target.value).trim();
+        setPwdForm(tmpPwdForm);
     };
 
     return (
@@ -46,7 +42,7 @@ const Body = function(props) {
                         className="form-control"
                         type="password"
                         placeholder="type your original pwd"
-                        onChange={ event => formChangeHandler(event) }
+                        onChange={ event => formChangeHandler(event, 'original') }
                     />
                 </div>
                 <div className="form-group">
@@ -58,7 +54,7 @@ const Body = function(props) {
                         className="form-control"
                         type="password"
                         placeholder="type your new pwd"
-                        onChange={ event => formChangeHandler(event) }
+                        onChange={ event => formChangeHandler(event, 'modify') }
                     />
                 </div>
                 <div className="form-group">
@@ -70,7 +66,7 @@ const Body = function(props) {
                         className="form-control"
                         type="password"
                         placeholder="confirm your new pwd"
-                        onChange={ event => formChangeHandler(event) }
+                        onChange={ event => formChangeHandler(event, 'confirm') }
                     />
                 </div>
             </form>
@@ -78,7 +74,7 @@ const Body = function(props) {
     );
 };
 const Footer = function(props) {
-    const { cache, updatePwd } = props;
+    const { pwdForm } = props;
     const submitValidate = formData => {
         const pwdReg = /^\S{10,18}$/;
         const alertInfo = {
@@ -144,8 +140,8 @@ const Footer = function(props) {
         return true;
     };
     const submitForm = (evt) => { // eslint-disable-line
-        if (submitValidate(cache.pwd || {})) {
-            updatePwd(cache.pwd);
+        if (submitValidate(pwdForm || {})) {
+            updatePwd(pwdForm);
         }
     };
 
@@ -157,12 +153,12 @@ const Footer = function(props) {
         </div>
     );
 };
-const UI_EditPwdModal = function(props) {
-    const {
-        cache,
-        updatePwdForm,
-        updatePwd,
-    } = props;
+const UI_EditPwdModal = function() {
+    const [pwdForm, setPwdForm] = useState({
+        original: '',
+        modify: '',
+        confirm: '',
+    });
 
     return (
         <div
@@ -174,31 +170,23 @@ const UI_EditPwdModal = function(props) {
             <div className="modal-dialog" role="document">
                 <div className="modal-content">
                     <Header/>
-                    <Body updatePwdForm={ updatePwdForm }/>
-                    <Footer cache={ cache } updatePwd={ updatePwd }/>
+                    <Body pwdForm={ pwdForm } setPwdForm={ setPwdForm }/>
+                    <Footer pwdForm={ pwdForm }/>
                 </div>
             </div>
         </div>
     );
 };
 const mapState2Props = (state, props) => state.appReducer; // eslint-disable-line
-const mapDispatch2Props = () => ({
-    updatePwdForm: () => null,
-    updatePwd: () => null,
-});
+const mapDispatch2Props = () => ({});
 let EditPwdModal;
 
 Body.propTypes = {
-    updatePwdForm: PropTypes.func.isRequired,
+    pwdForm: PropTypes.object,
+    setPwdForm: PropTypes.func.isRequired,
 };
 Footer.propTypes = {
-    cache: PropTypes.object,
-    updatePwd: PropTypes.func.isRequired,
-};
-UI_EditPwdModal.propTypes = {
-    cache: PropTypes.object,
-    updatePwdForm: PropTypes.func.isRequired,
-    updatePwd: PropTypes.func.isRequired,
+    pwdForm: PropTypes.object,
 };
 
 EditPwdModal = connect(

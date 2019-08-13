@@ -11,7 +11,7 @@ import {
 import { stanLoading } from 'lib';
 
 const UI_PageEditPaper = function(props) {
-    const { params, current } = props;
+    const { params } = props;
     const paperId = params.paperId;
     const pageType = paperId ? 'EDIT' : 'ADD';
 
@@ -25,7 +25,7 @@ const UI_PageEditPaper = function(props) {
     }, []);
 
     return (
-        <div className="page-edit-paper" key={ current }>
+        <div className="page-edit-paper">
             <Navbar/>
             <PaperEdit paperId={ paperId } pageType={ pageType }/>
             <LoginModal/>
@@ -38,7 +38,6 @@ const mapDispatch2Props = () => ({});
 let PageEditPaper;
 
 UI_PageEditPaper.propTypes = {
-    current: PropTypes.string,
     params: PropTypes.object,
 };
 

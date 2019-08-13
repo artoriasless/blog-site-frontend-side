@@ -12,7 +12,7 @@ import {
 import { stanLoading } from 'lib';
 
 const UI_PagePaper = function(props) {
-    const { current, params } = props;
+    const { params } = props;
     const paperId = params.paperId;
 
     useEffect(() => {
@@ -25,7 +25,7 @@ const UI_PagePaper = function(props) {
     }, []);
 
     return (
-        <div className="page-paper" key={ current }>
+        <div className="page-paper">
             <Navbar/>
             <div className="page-section-body row">
                 <PaperFilter/>
@@ -42,7 +42,6 @@ let PagePaper;
 
 UI_PagePaper.propTypes = {
     params: PropTypes.object.isRequired,
-    current: PropTypes.string,
 };
 
 PagePaper = connect(

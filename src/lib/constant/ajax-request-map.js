@@ -24,6 +24,9 @@ const ajaxRequestMap = {
         register: {
             url: '/api/user/register', type: POST
         },
+        sendActivateMail: {
+            url: '/api/user/send-activate-mail', type: POST
+        },
         activate: {
             url: '/api/user/activate', type: POST
         },
@@ -32,6 +35,9 @@ const ajaxRequestMap = {
         },
         updatePwd: {
             url: '/api/user/update-pwd', type: POST
+        },
+        resetPwd: {
+            url: '/api/user/reset-pwd', type: POST
         },
     }
 };
