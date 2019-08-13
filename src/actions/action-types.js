@@ -5,6 +5,7 @@ const GET_USER_DEFAULT = 'GET_USER_DEFAULT';
 const LOGIN = 'LOGIN';
 const LOGOUT = 'LOGOUT';
 const REGISTER = 'REGISTER';
+const UPDATE_USER_INFO = 'UPDATE_USER_INFO';
 
 const actionTypes =  {
     CHANGE_ROUTE,
@@ -14,6 +15,7 @@ const actionTypes =  {
     LOGIN,
     LOGOUT,
     REGISTER,
+    UPDATE_USER_INFO,
 };
 
 export default actionTypes;

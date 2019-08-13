@@ -9,6 +9,7 @@ import getUserDefault from './get-user-default';
 import login from './login';
 import logout from './logout';
 import register from './register';
+import updateUserInfo from './update-user-info';
 
 export {
     actionTypes,
@@ -20,4 +21,5 @@ export {
     login,
     logout,
     register,
+    updateUserInfo,
 };

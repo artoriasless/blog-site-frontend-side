@@ -11,6 +11,7 @@ import getUserDefault from './get-user-default';
 import loginFunc from './login';
 import logoutFunc from './logout';
 import registerFunc from './register';
+import updateUserInfoFunc from './update-user-info';
 
 const defaultState = {
     current: (() => document.URL.replace(/^[^/]+\/\/[^/]+/, ''))(),
@@ -71,6 +72,9 @@ const appReducer = (state = defaultState, action = {}) => {
 
     case actionTypes.REGISTER:
         return registerFunc(state, action);
+
+    case actionTypes.UPDATE_USER_INFO:
+        return updateUserInfoFunc(state, action);
 
     default:
         return state;
