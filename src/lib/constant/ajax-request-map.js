@@ -27,6 +27,9 @@ const ajaxRequestMap = {
         updateInfo: {
             url: '/api/user/update-info', type: POST
         },
+        updatePwd: {
+            url: '/api/user/update-pwd', type: POST
+        },
     }
 };
 

@@ -12,6 +12,7 @@ import loginFunc from './login';
 import logoutFunc from './logout';
 import registerFunc from './register';
 import updateUserInfoFunc from './update-user-info';
+import updatePwdFunc from './update-pwd';
 
 const defaultState = {
     current: (() => document.URL.replace(/^[^/]+\/\/[^/]+/, ''))(),
@@ -39,7 +40,6 @@ const defaultState = {
             content: '',
         },
     },
-    message: {},
     filter: {
         latest: { count: 0, rows: [], },
         tag: { count: 0, rows: [], },
@@ -75,6 +75,9 @@ const appReducer = (state = defaultState, action = {}) => {
 
     case actionTypes.UPDATE_USER_INFO:
         return updateUserInfoFunc(state, action);
+
+    case actionTypes.UPDATE_PWD:
+        return updatePwdFunc(state, action);
 
     default:
         return state;

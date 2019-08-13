@@ -6,6 +6,7 @@ const LOGIN = 'LOGIN';
 const LOGOUT = 'LOGOUT';
 const REGISTER = 'REGISTER';
 const UPDATE_USER_INFO = 'UPDATE_USER_INFO';
+const UPDATE_PWD = 'UPDATE_PWD';
 
 const actionTypes =  {
     CHANGE_ROUTE,
@@ -16,6 +17,7 @@ const actionTypes =  {
     LOGOUT,
     REGISTER,
     UPDATE_USER_INFO,
+    UPDATE_PWD,
 };
 
 export default actionTypes;

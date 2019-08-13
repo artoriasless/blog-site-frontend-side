@@ -10,6 +10,7 @@ import login from './login';
 import logout from './logout';
 import register from './register';
 import updateUserInfo from './update-user-info';
+import updatePwd from './update-pwd';
 
 export {
     actionTypes,
@@ -22,4 +23,5 @@ export {
     logout,
     register,
     updateUserInfo,
+    updatePwd,
 };
