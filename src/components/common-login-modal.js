@@ -6,7 +6,10 @@ import {
     login,
     register
 } from 'actions';
-import { stanAlert } from 'lib';
+import {
+    stanAlert,
+    ajaxAction,
+} from 'lib';
 
 import 'plugins/switch-button/index.js';
 
@@ -79,6 +82,34 @@ const submitValidate = (formData, type) => {
 
     return true;
 };
+const resetPwdValidate = email => {
+    const emailReg = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/;
+    const alertInfo = {
+        title: 'Warning!',
+        email: {
+            null: 'please type the email address!',
+            illegal: 'please type legal email address!',
+        },
+    };
+
+    if (!email) {
+        stanAlert({
+            title: alertInfo.title,
+            content: alertInfo.email.null
+        });
+
+        return false;
+    } else if (!emailReg.test(email)) {
+        stanAlert({
+            title: alertInfo.title,
+            content: alertInfo.email.illegal,
+        });
+
+        return false;
+    }
+
+    return true;
+};
 
 const Header = function() {
     return (
@@ -106,14 +137,14 @@ const Body = function(props) {
         submitForm,
     } = props;
     const registerFormChangeHandler = (evt, key) => {
-        const val = evt.target.value || '';
+        const val = (evt.target.value || '').trim();
         const originalRegisterForm = JSON.parse(JSON.stringify(registerForm));
 
         originalRegisterForm[key] = val;
         setRegisterForm(originalRegisterForm);
     };
     const loginFormChangeHandler = (evt, key) => {
-        const val = evt.target.value || '';
+        const val = (evt.target.value || '').trim();
         const originalLoginForm = JSON.parse(JSON.stringify(loginForm));
 
         originalLoginForm[key] = val;
@@ -127,6 +158,37 @@ const Body = function(props) {
     const enterRegisterHandler = evt => {
         if (evt.keyCode === 13) {
             submitForm();
+        }
+    };
+    const resetPwdHandler = evt => { // eslint-disable-line
+        const jsonData = {
+            email: loginForm.email || ''
+        };
+        const successFunc = function(result) {
+            if (result.success) {
+                stanAlert({
+                    type: 'success',
+                    content: result.message,
+                    textAlign: 'center',
+                    shownExpires: 0.75,
+                });
+            } else {
+                stanAlert({
+                    title: 'Warning!',
+                    content: result.message,
+                });
+            }
+        };
+        const failFunc = function(err) {
+            stanAlert({
+                title: 'Warning!',
+                content: err.toString(),
+            });
+            console.info(err);  //  eslint-disable-line
+        };
+
+        if (resetPwdValidate(jsonData.email)) {
+            ajaxAction('user.resetPwd', jsonData, successFunc, failFunc);
         }
     };
 
@@ -202,6 +264,8 @@ const Body = function(props) {
                                 <a
                                     className="reset-pwd-link"
                                     href="javascript:;"
+                                    tabIndex="-1"
+                                    onClick={ event => resetPwdHandler(event) }
                                 >
                                     forget pwd?
                                 </a>
@@ -280,7 +344,7 @@ const Footer = function(props) {
     );
 };
 const UI_LoginModal = function(props) {
-    const { login, register, isLogin } = props;
+    const { isLogin } = props;
     const [submitType, setSubmitType] = useState('login');
     const [loginForm, setLoginForm] = useState({
         email: '',
@@ -338,10 +402,7 @@ const UI_LoginModal = function(props) {
     );
 };
 const mapState2Props = (state, props) => state.appReducer; // eslint-disable-line
-const mapDispatch2Props = () => ({
-    login,
-    register,
-});
+const mapDispatch2Props = () => ({});
 let LoginModal;
 
 Footer.propTypes = {
@@ -362,8 +423,6 @@ Footer.propTypes = {
 };
 UI_LoginModal.propTypes = {
     isLogin: PropTypes.bool,
-    login: PropTypes.func.isRequired,
-    register: PropTypes.func.isRequired,
 };
 
 LoginModal = connect(
