@@ -16,7 +16,6 @@ import {
 import config from 'config';
 
 const UserComment = memo(function Mod() {
-    const [mounted, setMounted] = useState(false);
     const [msg, setMsg] = useState({
         count: 0,
         page: 1,
@@ -54,14 +53,11 @@ const UserComment = memo(function Mod() {
     };
 
     useEffect(() => {
-        if (!mounted) {
-            setMounted(true);
-            getMessage({
-                page: 1
-            });
-        }
+        getMessage({
+            page: 1
+        });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [mounted]);
+    }, []);
 
     return (
         <div className="col-xs-12 col-md-8 user-comment">
