@@ -1,8 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import {
+    ajaxAction,
+    stanAlert,
     getQueryParam,
     ModulePager,
 } from 'lib';
@@ -101,13 +103,37 @@ const CataloguePager = function(props) {
     return null;
 };
 const UI_Catalogue = function(props) {
+    const [catalogue, setCatalogue] = useState({
+        current: 1,
+        dataCount: 0,
+        rows: []
+    });
     const {
-        catalogue,
         userInfo,
-        getCatalogue,
         filterType,
         filterParam,
     } = props;
+    const getCatalogue = jsonData => {
+        const successFunc = function(result) {
+            if (result.success) {
+                setCatalogue(result.data);
+            } else {
+                stanAlert({
+                    title: 'Warning!',
+                    content: result.message,
+                });
+            }
+        };
+        const failFunc = function(err) {
+            stanAlert({
+                title: 'Warning!',
+                content: err.toString(),
+            });
+            console.info(err); // eslint-disable-line
+        };
+
+        ajaxAction('catalogue.page', jsonData, successFunc, failFunc);
+    };
     const pageJump = pageData => {
         getCatalogue({
             page: pageData.page,
@@ -133,19 +159,8 @@ const UI_Catalogue = function(props) {
             filterType,
             filterParam,
         });
-
-        window.onresize = () => {
-            const currentViewWidth = document.body.offsetWidth;
-
-            if (currentViewWidth >= 767) {
-                $('.filter-container').css('display', 'block');
-            } else {
-                $('.page-section-body').removeClass('filter-expand');
-                $('.filter-container').css('display', 'none');
-            }
-        };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [filterType, filterParam]);
 
     return (
         <div id="catalogue" className="catalogue-container col-xs-12 col-md-8 col-lg-9">
@@ -166,9 +181,7 @@ const UI_Catalogue = function(props) {
     );
 };
 const mapState2Props = (state, props) => state.appReducer;  //  eslint-disable-line
-const mapDispatch2Props = () => ({
-    getCatalogue: () => null,
-});
+const mapDispatch2Props = () => ({});
 let Catalogue;
 
 CatalogueItem.propTypes = {
@@ -180,11 +193,9 @@ CataloguePager.propTypes = {
     pageJump: PropTypes.func,
 };
 UI_Catalogue.propTypes = {
-    catalogue: PropTypes.object,
     userInfo: PropTypes.object,
     filterType: PropTypes.string,
     filterParam: PropTypes.string,
-    getCatalogue: PropTypes.func.isRequired,
 };
 
 Catalogue = connect(

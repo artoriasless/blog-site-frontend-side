@@ -40,16 +40,6 @@ const defaultState = {
             content: '',
         },
     },
-    filter: {
-        latest: { count: 0, rows: [], },
-        tag: { count: 0, rows: [], },
-        timeline: { count: 0, rows: [], },
-    },
-    catalogue: {
-        current: 1,
-        dataCount: 0,
-        rows: []
-    },
     paper: {},
     reply: {},
 };

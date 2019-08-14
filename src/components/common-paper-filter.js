@@ -1,9 +1,15 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
+import {
+    stanAlert,
+    ajaxAction
+} from 'lib';
+
 const FilterContentLatest = function(props) {
-    const filterRows = props.filter.rows;
+    const { filter } = props;
+    const filterRows = filter.rows;
 
     return (
         <div className="filter-content">
@@ -36,8 +42,9 @@ const FilterContentLatest = function(props) {
     );
 };
 const FilterContentTag = function(props) {
-    const filterCount = props.filter.count;
-    const filterRows = props.filter.rows;
+    const { filter } = props;
+    const filterCount = filter.count;
+    const filterRows = filter.rows;
 
     return (
         <div className="filter-content">
@@ -71,8 +78,9 @@ const FilterContentTag = function(props) {
     );
 };
 const FilterContentTimeline = function(props) {
-    const filterCount = props.filter.count;
-    const filterRows = props.filter.rows;
+    const { filter } = props;
+    const filterCount = filter.count;
+    const filterRows = filter.rows;
 
     return (
         <div className="filter-content">
@@ -105,8 +113,12 @@ const FilterContentTimeline = function(props) {
         </div>
     );
 };
-const UI_PaperFilter = function(props) {
-    const filter = props.filter;
+const UI_PaperFilter = function() {
+    const [filter, setFilter] = useState({
+        latest: { count: 0, rows: [], },
+        tag: { count: 0, rows: [], },
+        timeline: { count: 0, rows: [], },
+    });
     const togglePaperFilter = (evt) => {
         const $container = $(evt.target).closest('.page-section-body');
         const $filterContainer = $container.find('.filter-container');
@@ -119,6 +131,34 @@ const UI_PaperFilter = function(props) {
             $filterContainer.fadeIn();
         }
     };
+    const getFilterCount = () => {
+        const jsonData = {
+            filterType: 'all'
+        };
+        const successFunc = function(result) {
+            if (result.success) {
+                setFilter(result.data);
+            } else {
+                stanAlert({
+                    title: 'Warning!',
+                    content: result.message,
+                });
+            }
+        };
+        const failFunc = function(err) {
+            stanAlert({
+                title: 'Warning!',
+                content: err.toString(),
+            });
+            console.info(err); // eslint-disable-line
+        };
+
+        ajaxAction('paper.filterCount', jsonData, successFunc, failFunc);
+    };
+
+    useEffect(() => {
+        getFilterCount();
+    }, []);
 
     return (
         <>
@@ -135,24 +175,17 @@ const UI_PaperFilter = function(props) {
     );
 };
 const mapState2Props = (state, props) => state.appReducer; // eslint-disable-line
-const mapDispatch2Props = () => ({
-    getTagFilter: () => null,
-    getTimelineFilter: () => null,
-    getLatestFilter: () => null,
-});
+const mapDispatch2Props = () => ({});
 let PaperFilter;
 
-FilterContentTimeline.propTypes = {
-    filter: PropTypes.object.isRequired,
+FilterContentLatest.propTypes = {
+    filter: PropTypes.object
 };
 FilterContentTag.propTypes = {
-    filter: PropTypes.object.isRequired,
+    filter: PropTypes.object
 };
-FilterContentLatest.propTypes = {
-    filter: PropTypes.object.isRequired,
-};
-UI_PaperFilter.propTypes = {
-    filter: PropTypes.object.isRequired,
+FilterContentTimeline.propTypes = {
+    filter: PropTypes.object
 };
 
 PaperFilter = connect(

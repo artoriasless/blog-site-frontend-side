@@ -39,6 +39,16 @@ const ajaxRequestMap = {
         resetPwd: {
             url: '/api/user/reset-pwd', type: POST
         },
+    },
+    paper: {
+        filterCount: {
+            url: '/api/paper/filter-count', type: GET
+        },
+    },
+    catalogue: {
+        page: {
+            url: '/api/catalogue/page', type: GET
+        }
     }
 };
 

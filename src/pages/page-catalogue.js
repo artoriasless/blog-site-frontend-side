@@ -16,10 +16,21 @@ const UI_PageCatalogue = function(props) {
     const filterParam = params.filterParam || '';
     let filterType = params.filterType;
 
-    filterType = filterReg.test(filterType) ? filterType.toUpperCase() : 'ALL';
+    filterType = filterReg.test(filterType) ? filterType.toLowerCase() : 'all';
 
     useEffect(() => {
         stanLoading();
+
+        window.onresize = () => {
+            const currentViewWidth = document.body.offsetWidth;
+
+            if (currentViewWidth >= 767) {
+                $('.filter-container').css('display', 'block');
+            } else {
+                $('.page-section-body').removeClass('filter-expand');
+                $('.filter-container').css('display', 'none');
+            }
+        };
 
         setTimeout(() => {
             stanLoading('hide');
