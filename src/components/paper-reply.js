@@ -9,19 +9,22 @@ import config from 'config';
 
 const UI_PaperReply = function(props) {
     const { paperId, userInfo } = props;
-    const reply = props.reply || {
+    const reply = {
         paperId,
         replyList: [],
     };
     const replyId2IdxMap = {};
     const userId2NameMap = {};
-    const showReplyModal = (evt, formData) => {
-        const isLogin = props.cache.isLogin;
-        const resetReplyForm = props.resetReplyForm;
+    const showLoginModal = evt => { // eslint-disable-line
+        $('.navbar-collapse').collapse('hide');
+        $('#loginModal').modal();
+        document.querySelector('#registerForm').reset();
+        document.querySelector('#loginForm').reset();
+    };
+    const showReplyModal = (evt, formData) => { // eslint-disable-line
+        const isLogin = userInfo && userInfo.id && userInfo.uuid && userInfo.email;
 
         if (isLogin) {
-            resetReplyForm(formData);
-
             $('.navbar-collapse').collapse('hide');
             $('#replyModal').modal();
             document.querySelector('#replyForm').reset();
@@ -37,17 +40,11 @@ const UI_PaperReply = function(props) {
             }, 1500);
         }
     };
-    const showLoginModal = () => {
-        $('.navbar-collapse').collapse('hide');
-        $('#loginModal').modal();
-        document.querySelector('#registerForm').reset();
-        document.querySelector('#loginForm').reset();
-    };
-    const errHandler = (evt) => {   //  eslint-disable-line
-        const $userAvatar = $(evt.target);
-        const defaultAvatarLink = `${config.ossPublic.user}/default.jpg?${Date.parse(new Date())}`;
+    const avatarErrHandler = (evt) => {   //  eslint-disable-line
+        const $userAvatar = evt.target;
+        const defaultAvatarLink = `${config.ossPublic.user}/default.jpg}`;
 
-        $userAvatar.attr('src', defaultAvatarLink);
+        $userAvatar.setAttribute('src', defaultAvatarLink);
     };
 
     reply.replyList.forEach((replyItem, index) => {
@@ -136,7 +133,7 @@ const UI_PaperReply = function(props) {
                                         <img
                                             className="avatar-img"
                                             src={ avatarSrc }
-                                            onError={ event => errHandler(event) }
+                                            onError={ event => avatarErrHandler(event) }
                                         />
                                     </div>
                                     <div className="user-name">
@@ -215,9 +212,7 @@ const mapDispatch2Props = () => ({
 let PaperReply;
 
 UI_PaperReply.propTypes = {
-    resetReplyForm: PropTypes.func.isRequired,
-    deleteReply: PropTypes.func.isRequired,
-    paperId: PropTypes.string,
+    paperId: PropTypes.number,
     userInfo: PropTypes.object,
     reply: PropTypes.object,
     cache: PropTypes.object,

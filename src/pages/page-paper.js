@@ -12,11 +12,22 @@ import {
 import { stanLoading } from 'lib';
 
 const UI_PagePaper = function(props) {
-    const { params } = props;
-    const paperId = params.paperId;
+    const { params, userInfo } = props;
+    const paperId = Number(params.paperId) || 0;
 
     useEffect(() => {
         stanLoading();
+
+        window.onresize = function() {
+            const currentViewWidth = document.body.offsetWidth;
+
+            if (currentViewWidth >= 767) {
+                $('.filter-container').css('display', 'block');
+            } else {
+                $('.page-section-body').removeClass('filter-expand');
+                $('.filter-container').css('display', 'none');
+            }
+        };
 
         setTimeout(() => {
             stanLoading('hide');
@@ -29,7 +40,7 @@ const UI_PagePaper = function(props) {
             <Navbar/>
             <div className="page-section-body row">
                 <PaperFilter/>
-                <Paper paperId={ paperId }/>
+                <Paper paperId={ paperId } userInfo={ userInfo }/>
             </div>
             <LoginModal/>
             <ReplyModal/>
@@ -41,6 +52,7 @@ const mapDispatch2Props = () => ({});
 let PagePaper;
 
 UI_PagePaper.propTypes = {
+    userInfo: PropTypes.object,
     params: PropTypes.object.isRequired,
 };
 

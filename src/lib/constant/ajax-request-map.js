@@ -44,6 +44,9 @@ const ajaxRequestMap = {
         filterCount: {
             url: '/api/paper/filter-count', type: GET
         },
+        detail: {
+            url: '/api/paper/:paperId', type: GET
+        },
     },
     catalogue: {
         page: {

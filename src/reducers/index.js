@@ -40,7 +40,6 @@ const defaultState = {
             content: '',
         },
     },
-    paper: {},
     reply: {},
 };
 const appReducer = (state = defaultState, action = {}) => {
