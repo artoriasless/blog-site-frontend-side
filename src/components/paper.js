@@ -14,7 +14,11 @@ import {
 import 'plugins/img-viewer/index.js';
 
 const UI_Paper = function(props) {
-    const { paperId, userInfo } = props;
+    const {
+        paperId,
+        userInfo,
+        timestamp
+    } = props;
     const [paper, setPaper] = useState({});
     const getPaper = jsonData => {
         const successFunc = function(result) {
@@ -119,7 +123,11 @@ const UI_Paper = function(props) {
                     <hr/>
                     <div className="paper-body" dangerouslySetInnerHTML={{ __html: paperBody }}></div>
                     <hr/>
-                    <PaperReply paperId={ paperId } userInfo={ userInfo }/>
+                    <PaperReply
+                        paperId={ paperId }
+                        userInfo={ userInfo }
+                        timestamp={ timestamp }
+                    />
                 </div>
                 {
                     userInfo.isOwner ? (
@@ -139,6 +147,7 @@ const mapDispatch2Props = () => ({});
 let Paper;
 
 UI_Paper.propTypes = {
+    timestamp: PropTypes.number,
     paperId: PropTypes.number,
     userInfo: PropTypes.object,
 };

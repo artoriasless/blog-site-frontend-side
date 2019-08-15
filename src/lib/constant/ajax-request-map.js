@@ -52,6 +52,11 @@ const ajaxRequestMap = {
         page: {
             url: '/api/catalogue/page', type: GET
         }
+    },
+    reply: {
+        list: {
+            url: '/api/reply', type: GET
+        }
     }
 };
 

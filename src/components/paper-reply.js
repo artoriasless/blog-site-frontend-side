@@ -1,18 +1,23 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import {
-    stanAlert
+    stanAlert,
+    ajaxAction
 } from 'lib';
 import config from 'config';
 
 const UI_PaperReply = function(props) {
-    const { paperId, userInfo } = props;
-    const reply = {
+    const {
         paperId,
+        userInfo,
+        timestamp
+    } = props;
+    const [reply, setReply] = useState({
+        paperId: 0,
         replyList: [],
-    };
+    });
     const replyId2IdxMap = {};
     const userId2NameMap = {};
     const showLoginModal = evt => { // eslint-disable-line
@@ -40,12 +45,45 @@ const UI_PaperReply = function(props) {
             }, 1500);
         }
     };
-    const avatarErrHandler = (evt) => {   //  eslint-disable-line
+    const avatarErrHandler = evt => {   //  eslint-disable-line
         const $userAvatar = evt.target;
         const defaultAvatarLink = `${config.ossPublic.user}/default.jpg}`;
 
         $userAvatar.setAttribute('src', defaultAvatarLink);
     };
+    const getReply = jsonData => {
+        const successFunc = function(result) {
+            if (result.success) {
+                setReply({
+                    paperId: jsonData.paperId,
+                    replyList: result.data
+                });
+            } else {
+                stanAlert({
+                    title: 'Warning!',
+                    content: result.message,
+                });
+            }
+        };
+        const failFunc = function(err) {
+            stanAlert({
+                title: 'Warning!',
+                content: err.toString(),
+            });
+            console.info(err); // eslint-disable-line
+        };
+
+        ajaxAction('reply.list', jsonData, successFunc, failFunc);
+    };
+
+    useEffect(() => {
+        if (paperId !== reply.paperId) {
+            getReply({
+                paperId,
+            });
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [paperId, timestamp]);
 
     reply.replyList.forEach((replyItem, index) => {
         replyItem.editTag = (replyItem.userInfo.uuid === userInfo.uuid) && !replyItem.isDeleted;
