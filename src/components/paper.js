@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import {
-    PaperReply,
+    PaperReply
 } from 'components';
 import {
     stanAlert,
@@ -99,44 +99,46 @@ const UI_Paper = function(props) {
         const paperBody = initImgClass(markdown(paper.content));
 
         return (
-            <div className="paper-container col-xs-12 col-md-8 col-lg-9">
-                <div className="paper-content">
-                    <div className="paper-title">
-                        { paperTitle }
-                    </div>
-                    <div className="paper-subtitle">
-                        <div className="subtitle-tags pull-right">
-                            <i className="fa fa-tags"></i>
-                            &nbsp;
-                            <span className="tags-val">
-                                { tagVal }
-                            </span>
+            <>
+                <div className="paper-container col-xs-12 col-md-8 col-lg-9">
+                    <div className="paper-content">
+                        <div className="paper-title">
+                            { paperTitle }
                         </div>
-                        <div className="subtitle-date pull-right">
-                            <i className="fa fa-calendar"></i>
-                            &nbsp;
-                            <span className="date-val">
-                                { dateVal }
-                            </span>
+                        <div className="paper-subtitle">
+                            <div className="subtitle-tags pull-right">
+                                <i className="fa fa-tags"></i>
+                                &nbsp;
+                                <span className="tags-val">
+                                    { tagVal }
+                                </span>
+                            </div>
+                            <div className="subtitle-date pull-right">
+                                <i className="fa fa-calendar"></i>
+                                &nbsp;
+                                <span className="date-val">
+                                    { dateVal }
+                                </span>
+                            </div>
                         </div>
+                        <hr/>
+                        <div className="paper-body" dangerouslySetInnerHTML={{ __html: paperBody }}></div>
+                        <hr/>
+                        <PaperReply
+                            paperId={ paperId }
+                            userInfo={ userInfo }
+                            timestamp={ timestamp }
+                        />
                     </div>
-                    <hr/>
-                    <div className="paper-body" dangerouslySetInnerHTML={{ __html: paperBody }}></div>
-                    <hr/>
-                    <PaperReply
-                        paperId={ paperId }
-                        userInfo={ userInfo }
-                        timestamp={ timestamp }
-                    />
+                    {
+                        userInfo.isOwner ? (
+                            <a className="edit-paper-link" href={ `/admin/edit-paper/${paper.id}` }>
+                                <i className="fa fa-edit"></i>
+                            </a>
+                        ) : null
+                    }
                 </div>
-                {
-                    userInfo.isOwner ? (
-                        <a className="edit-paper-link" href={ `/admin/edit-paper/${paper.id}` }>
-                            <i className="fa fa-edit"></i>
-                        </a>
-                    ) : null
-                }
-            </div>
+            </>
         );
     } else {
         return null;

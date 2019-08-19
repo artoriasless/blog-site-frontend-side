@@ -7,7 +7,6 @@ import {
     LoginModal,
     PaperFilter,
     Paper,
-    ReplyModal
 } from 'components';
 import { stanLoading } from 'lib';
 
@@ -43,7 +42,6 @@ const UI_PagePaper = function(props) {
                 <Paper paperId={ paperId } userInfo={ userInfo }/>
             </div>
             <LoginModal/>
-            <ReplyModal/>
         </div>
     );
 };

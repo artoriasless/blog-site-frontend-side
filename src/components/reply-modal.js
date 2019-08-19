@@ -1,40 +1,74 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { stanAlert } from 'lib';
+import {
+    stanAlert,
+    ajaxAction
+} from 'lib';
+
+const submitValidate = reply => {
+    const alertInfo = {
+        title: 'Warning!',
+        content: {
+            null: 'please type the comment!',
+        },
+    };
+
+    if (!reply.content) {
+        stanAlert({
+            title: alertInfo.title,
+            content: alertInfo.content.null,
+        });
+
+        return false;
+    }
+
+    return true;
+};
 
 const Footer = function(props) {
-    const submitValidate = (_type, _reply) => {
-        const alertInfo = {
-            title: 'Warning!',
-            content: {
-                null: 'please type the comment!',
-            },
-        };
+    const { replyForm, getReply } = props;
+    const submitReply = evt => { // eslint-disable-line
+        const jsonData = Object.assign({}, replyForm);
+        const successFunc = function(result) {
+            if (result.success) {
+                $('#replyModal').modal('hide');
 
-        if (!_reply.content) {
-            stanAlert({
-                title: alertInfo.title,
-                content: alertInfo.content.null,
-            });
-
-            return false;
-        }
-
-        return true;
-    };
-    const submitReply = (evt) => { // eslint-disable-line
-        const { cache, addReply, editReply } = props;
-        const reply = cache.reply || {};
-        const type = reply.replyType;
-
-        if (submitValidate(type, reply)) {
-            if (type === 'ADD') {
-                addReply(reply);
-            } else if (type === 'EDIT') {
-                editReply(reply);
+                getReply({
+                    paperId: jsonData.paperId
+                });
+            } else {
+                stanAlert({
+                    title: 'Warning!',
+                    content: result.message,
+                });
             }
+        };
+        const failFunc = function(err) {
+            stanAlert({
+                title: 'Warning!',
+                content: err.toString(),
+            });
+            console.info(err);  //  eslint-disable-line
+        };
+        let reqName;
+
+        jsonData.content = jsonData.content.trim();
+
+        if (submitValidate(replyForm)) {
+            switch(replyForm.replyType) {
+            case 'ADD':
+                reqName = 'reply.create';
+                break;
+            case 'EDIT':
+                reqName = 'reply.update';
+                break;
+            default:
+                // de nothing
+            }
+
+            ajaxAction(reqName, jsonData, successFunc, failFunc);
         }
     };
 
@@ -47,12 +81,21 @@ const Footer = function(props) {
     );
 };
 const Body = function(props) {
-    const formChangeHandler = (evt) => { // eslint-disable-line
-        const { cache, updateReplyForm } = props;
-        const formData = cache.reply || {};
+    const { replyForm, setReplyForm } = props;
+    const $replyInput = useRef(null);
+    const formChangeHandler = evt => { // eslint-disable-line
+        const FormData = Object.assign({}, replyForm);
 
-        updateReplyForm(formData);
+        FormData.content = evt.target.value;
+        setReplyForm(FormData);
     };
+
+    useEffect(() => {
+        if (JSON.stringify(replyForm) !== '{}') {
+            $replyInput.current.value = replyForm.content;
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [replyForm]);
 
     return (
         <div className="modal-body">
@@ -61,32 +104,50 @@ const Body = function(props) {
                     id="replyInput"
                     name="content"
                     placeholder="please type your comment here..."
+                    ref={ $replyInput }
                     onChange={ event => formChangeHandler(event) }
                 ></textarea>
             </form>
         </div>
     );
 };
-const Header = function() {
+const Header = function(props) {
+    const replyForm = props.replyForm || {};
+    let operate;
+
+    switch(replyForm.replyType) {
+    case 'ADD':
+        operate = 'Add';
+        break;
+    case 'EDIT':
+        operate = 'Update';
+        break;
+    default:
+        operate = 'Add';
+    }
+
     return (
         <div className="modal-header">
             <h5 className="modal-title">
-                Add Your Comment
+                { operate } Your Comment
             </h5>
             <a
                 className="btn close"
                 data-dismiss="modal"
                 aria-label="Close"
             >
-                <i
-                    className="fa fa-times"
-                    aria-hidden="true"
-                ></i>
+                <i className="fa fa-times" aria-hidden="true"></i>
             </a>
         </div>
     );
 };
 const UI_ReplyModal = function(props) {
+    const {
+        replyForm,
+        setReplyForm,
+        getReply
+    } = props;
+
     return (
         <div
             id="replyModal"
@@ -96,40 +157,33 @@ const UI_ReplyModal = function(props) {
         >
             <div className="modal-dialog" role="document">
                 <div className="modal-content">
-                    <Header/>
-                    <Body updateReplyForm={ props.updateReplyForm } cache={ props.cache }/>
-                    <Footer
-                        addReply={ props.addReply }
-                        editReply={ props.editReply }
-                        cache={ props.cache }
-                    />
+                    <Header replyForm={ replyForm }/>
+                    <Body replyForm={ replyForm } setReplyForm={ setReplyForm }/>
+                    <Footer replyForm={ replyForm } getReply={ getReply }/>
                 </div>
             </div>
         </div>
     );
 };
 const mapState2Props = (state, props) => state.appReducer; // eslint-disable-line
-const mapDispatch2Props = () => ({
-    updateReplyForm: () => null,
-    addReply: () => null,
-    editReply: () => null,
-});
+const mapDispatch2Props = () => ({});
 let ReplyModal;
 
 Footer.propTypes = {
-    addReply: PropTypes.func.isRequired,
-    editReply: PropTypes.func.isRequired,
-    cache: PropTypes.object,
+    replyForm: PropTypes.object,
+    getReply: PropTypes.func
 };
 Body.propTypes = {
-    updateReplyForm: PropTypes.func.isRequired,
-    cache: PropTypes.object,
+    replyForm: PropTypes.object,
+    setReplyForm: PropTypes.func,
+};
+Header.propTypes = {
+    replyForm: PropTypes.object,
 };
 UI_ReplyModal.propTypes = {
-    updateReplyForm: PropTypes.func.isRequired,
-    addReply: PropTypes.func.isRequired,
-    editReply: PropTypes.func.isRequired,
-    cache: PropTypes.object,
+    replyForm: PropTypes.object,
+    setReplyForm: PropTypes.func,
+    getReply: PropTypes.func
 };
 
 ReplyModal = connect(

@@ -7,6 +7,7 @@ import initNavbarBG from './common-init-navbar-bg';
 import markdown from './common-markdown';
 import stanAlert from './common-stan-alert';
 import stanLoading from './common-stan-loading';
+import stanConfirm from './common-stan-confirm';
 import ajaxAction from './common-ajax-action';
 
 import ModulePager from './module-pager';
@@ -22,6 +23,7 @@ export {
     markdown,
     stanAlert,
     stanLoading,
+    stanConfirm,
     ajaxAction,
 
     ModulePager,
