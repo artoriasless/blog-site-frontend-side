@@ -5,14 +5,13 @@ import PropTypes from 'prop-types';
 import {
     Navbar,
     LoginModal,
-    PaperEdit,
-    UploadModal
+    PaperEdit
 } from 'components';
 import { stanLoading } from 'lib';
 
 const UI_PageEditPaper = function(props) {
     const { params } = props;
-    const paperId = params.paperId;
+    const paperId = Number(params.paperId);
     const pageType = paperId ? 'EDIT' : 'ADD';
 
     useEffect(() => {
@@ -29,7 +28,6 @@ const UI_PageEditPaper = function(props) {
             <Navbar/>
             <PaperEdit paperId={ paperId } pageType={ pageType }/>
             <LoginModal/>
-            <UploadModal/>
         </div>
     );
 };

@@ -1,7 +1,6 @@
 import Navbar from './common-navbar';
 import LoginModal from './common-login-modal';
 import PaperFilter from './common-paper-filter';
-import UploadModal from './common-upload-modal';
 
 import Catalogue from './catalogue';
 import Paper from './paper';
@@ -18,7 +17,6 @@ export {
     Navbar,
     LoginModal,
     PaperFilter,
-    UploadModal,
 
     Catalogue,
     Paper,
