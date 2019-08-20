@@ -7,12 +7,18 @@ import {
     LoginModal,
     ActivateAccount
 } from 'components';
-import { stanLoading } from 'lib';
+import {
+    stanLoading,
+    initSeo
+} from 'lib';
 
 const UI_PageActivate = function(props) {
     const { params } = props;
 
     useEffect(() => {
+        initSeo({}, {
+            index: false,
+        });
         stanLoading();
 
         setTimeout(() => {

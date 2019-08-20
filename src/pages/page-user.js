@@ -12,6 +12,7 @@ import {
 import {
     stanLoading,
     stanAlert,
+    initSeo,
 } from 'lib';
 
 const UI_PageUser = function(props){
@@ -22,6 +23,9 @@ const UI_PageUser = function(props){
     } = props;
 
     useEffect(() => {
+        initSeo({}, {
+            index: false
+        });
         stanLoading();
 
         setTimeout(() => {

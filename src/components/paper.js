@@ -9,6 +9,7 @@ import {
     stanAlert,
     ajaxAction,
     markdown,
+    initSeo,
 } from 'lib';
 
 import 'plugins/img-viewer/index.js';
@@ -21,8 +22,10 @@ const UI_Paper = function(props) {
     } = props;
     const [paper, setPaper] = useState({});
     const getPaper = jsonData => {
+        const $initData = $('#initData');
         const successFunc = function(result) {
             if (result.success) {
+                initSeo(result.data);
                 setPaper(result.data);
             } else {
                 stanAlert({
@@ -39,7 +42,19 @@ const UI_Paper = function(props) {
             console.info(err); // eslint-disable-line
         };
 
-        ajaxAction('paper.detail', jsonData, successFunc, failFunc);
+        if ($initData.length === 0) {
+            ajaxAction('paper.detail', jsonData, successFunc, failFunc);
+        } else {
+            const initData = JSON.parse($initData.val() || '{}');
+
+            if (initData.paper && initData.paper.id) {
+                $initData.remove();
+                setPaper(initData.paper || {});
+                initSeo(initData.paper || {});
+            } else {
+                ajaxAction('paper.detail', jsonData, successFunc, failFunc);
+            }
+        }
     };
     const initImgClass = paperInnerHTML => {
         let $paperContainer = document.createElement('div');

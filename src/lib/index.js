@@ -9,6 +9,7 @@ import stanAlert from './common-stan-alert';
 import stanLoading from './common-stan-loading';
 import stanConfirm from './common-stan-confirm';
 import ajaxAction from './common-ajax-action';
+import initSeo from './common-init-seo';
 
 import ModulePager from './module-pager';
 import ModuleClockShow from './module-clock-show';
@@ -25,6 +26,7 @@ export {
     stanLoading,
     stanConfirm,
     ajaxAction,
+    initSeo,
 
     ModulePager,
     ModuleClockShow,

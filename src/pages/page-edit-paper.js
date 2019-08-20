@@ -7,7 +7,10 @@ import {
     LoginModal,
     PaperEdit
 } from 'components';
-import { stanLoading } from 'lib';
+import {
+    stanLoading,
+    initSeo
+} from 'lib';
 
 const UI_PageEditPaper = function(props) {
     const { params } = props;
@@ -15,6 +18,9 @@ const UI_PageEditPaper = function(props) {
     const pageType = paperId ? 'EDIT' : 'ADD';
 
     useEffect(() => {
+        initSeo({}, {
+            index: false,
+        });
         stanLoading();
 
         setTimeout(() => {

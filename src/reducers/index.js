@@ -20,27 +20,6 @@ const defaultState = {
     hasReqDefault: false,
     userInfo: {},
     timestamp: Date.parse(new Date()),
-
-    cache: {
-        isLogin: false,
-        login: {},
-        register: {},
-        userInfo: { userName: '', gender: 0, },
-        pwd: {
-            original: '',
-            modify: '',
-            confirm: '',
-        },
-        reply: {},
-        paper: {
-            title: '',
-            tag: '',
-            subtag: '',
-            brief: '',
-            content: '',
-        },
-    },
-    reply: {},
 };
 const appReducer = (state = defaultState, action = {}) => {
     switch (action.type) {

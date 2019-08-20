@@ -7,6 +7,7 @@ import {
     stanAlert,
     getQueryParam,
     ModulePager,
+    initSeo,
 } from 'lib';
 
 const CatalogueItem = function(props) {
@@ -90,12 +91,16 @@ const CatalogueList = function(props) {
 const CataloguePager = function(props) {
     const { catalogue, pageJump } = props;
     const pageCount = Math.ceil(catalogue.count / 10);
+    const pageData = {
+        current: catalogue.page,
+        dataCount: catalogue.count,
+    };
 
     if (pageCount > 1) {
         return (
             <div className="catalogue-pager">
                 <hr/>
-                <ModulePager jumpHandler={ pageData => pageJump(pageData) } data={ catalogue }/>
+                <ModulePager jumpHandler={ pageData => pageJump(pageData) } data={ pageData }/>
             </div>
         );
     }
@@ -114,8 +119,12 @@ const UI_Catalogue = function(props) {
         filterParam,
     } = props;
     const getCatalogue = jsonData => {
+        const $initData = $('#initData');
         const successFunc = function(result) {
             if (result.success) {
+                initSeo(Object.assign({}, jsonData, {
+                    catalogue: result.data
+                }));
                 setCatalogue(result.data);
             } else {
                 stanAlert({
@@ -132,9 +141,25 @@ const UI_Catalogue = function(props) {
             console.info(err); // eslint-disable-line
         };
 
-        ajaxAction('catalogue.page', jsonData, successFunc, failFunc);
+        if ($initData.length === 0) {
+            ajaxAction('catalogue.page', jsonData, successFunc, failFunc);
+        } else {
+            const initData = JSON.parse($initData.val() || '{}');
+
+            if (initData.catalogue && initData.catalogue.length) {
+                $initData.remove();
+                setCatalogue(initData.catalogue || []);
+                initSeo(Object.assign({}, jsonData, {
+                    catalogue: initData.catalogue || []
+                }));
+            } else {
+                ajaxAction('catalogue.page', jsonData, successFunc, failFunc);
+            }
+        }
     };
     const pageJump = pageData => {
+        window.history.pushState('pageJump', 'changePageParam', `${window.location.pathname}?page=${pageData.page}`);
+
         getCatalogue({
             page: pageData.page,
             filterType,

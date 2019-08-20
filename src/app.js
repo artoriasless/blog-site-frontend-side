@@ -63,6 +63,14 @@ const render = () => {
         </Provider>
     ), document.getElementById('root'));
 };
+const initDataDOM = () => {
+    const $initData = $('#initData');
 
+    if (!$initData.val().trim()) {
+        $initData.remove();
+    }
+};
+
+initDataDOM();
 render();
 initLink();

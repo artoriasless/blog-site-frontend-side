@@ -5,10 +5,14 @@ import {
     Navbar,
     LoginModal
 } from 'components';
-import { stanLoading } from 'lib';
+import {
+    stanLoading,
+    initSeo
+} from 'lib';
 
 const UI_PageHome = function() {
     useEffect(() => {
+        initSeo();
         stanLoading();
 
         setTimeout(() => {
