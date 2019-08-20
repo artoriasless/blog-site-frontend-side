@@ -56,8 +56,8 @@ const Footer = function(props) {
 
         jsonData.content = jsonData.content.trim();
 
-        if (submitValidate(replyForm)) {
-            switch(replyForm.replyType) {
+        if (submitValidate(jsonData)) {
+            switch(jsonData.replyType) {
             case 'ADD':
                 reqName = 'reply.create';
                 break;
