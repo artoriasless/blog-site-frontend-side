@@ -66,6 +66,16 @@ const ajaxRequestMap = {
         delete: {
             url: '/api/reply/:id/delete', type: POST
         }
+    },
+    admin: {
+        paper: {
+            create: {
+                url: '/api/admin/paper/create', type: POST
+            },
+            update: {
+                url: '/api/admin/paper/:id/update', type: POST
+            },
+        },
     }
 };
 
