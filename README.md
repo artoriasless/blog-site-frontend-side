@@ -1,6 +1,8 @@
 # blog-site-frontend-side
 frontend-side of enhanced blog site belongs to me, version 5.0（[中文](https://github.com/MonkingStand/blog-site-frontend-side/blob/master/README.zh.md)）
 
+> depreciated tips : this repo has(will) be upgraded into **[6.0](https://github.com/MonkingStand/nextjs-blog-site)**
+
 > issue log : **[ISSUE](https://github.com/MonkingStand/blog-site-frontend-side/blob/master/ISSUE.md)**
 
 > blog site : **[stanby.cn](http://www.stanby.cn)**
